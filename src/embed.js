@@ -1,7 +1,7 @@
 
 // const Util = require('../util/Util');
 
-Colors = {
+const Colors = {
   DEFAULT: 0x000000,
   WHITE: 0xffffff,
   AQUA: 0x1abc9c,
