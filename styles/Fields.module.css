@@ -1,18 +1,12 @@
-.linkButton {
+.root {
+  list-style: none;
+}
+
+.fieldsManageButton {
   border: rgba(255, 255, 255, 0.5) 1px solid;
   color: rgba(255, 255, 255, 0.5);
   background-color: rgba(255, 255, 255, 0.2);
-  padding: 10px 30px;
-  display: block;
-  font-size: large;
+  margin-top: 4px;
+  padding: 10px 20px;
   border-radius: 10px;
-}
-
-.top {
-  padding: 20px;
-}
-
-.menu {
-  display: flex;
-  gap: 10px;
 }
