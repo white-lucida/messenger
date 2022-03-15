@@ -23,6 +23,10 @@ input {
   margin: 3px;
 }
 
+input[type="button"] {
+  background-color: #222;
+}
+
 input[type="submit"] {
   background-color: rgb(130, 130, 219);
   color: white;
@@ -31,7 +35,7 @@ input[type="submit"] {
   animation-duration: 1s;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover{
   background-color: rgb(82, 82, 143);
 }
 

@@ -1,32 +1,71 @@
-import { UseFormReturn } from "react-hook-form";
-
-import { Fields } from "./Fields";
 import styles from "../../styles/Form.module.css";
+import React, { useCallback, useEffect, useMemo, useState, createContext } from "react";
+import { APIActionRowComponent, APIEmbed, APIMessageComponent, ComponentType } from "discord-api-types";
+import { MessageInput } from "./MessageInput";
+import { EmbedInput } from "./EmbedInput";
+import { MessagePreview } from "./MessagePreview";
+import { useEmbeds } from "../hooks/use_embeds";
+import { EmbedsDispatchContext, useEmbed } from "../hooks/use_embed";
+import { ActionRowsActions, useActionRows } from "../hooks/use_actionrows";
+import { ActionRowInput } from "./ActionRowInput";
+import { useActionRow } from "../hooks/use_actionrow";
+import { ActionRowsDispatchContext } from "../hooks/use_actionrow";
+import { NewRowButton } from "./NewRowButton";
 
-const InvalidValueAlert = ({ children }: { children: React.ReactNode }) => {
-  return <p className={styles.error}> { children } </p>
+type FormProps = {
+  children: React.ReactNode,
+  onSubmit: (embeds: APIEmbed[], components: Partial<APIMessageComponent>[]) => void
 }
 
-const Form = ({ register, control, handleSubmit, formState, onSubmit }: Partial<UseFormReturn<Inputs>> & { onSubmit: () => void }) => {
+const Form: React.VFC<FormProps> = ({ children, onSubmit }) => {
+  /*
+   元データから編集用オブジェクトを形成
+  */
+  const _baseData: APIEmbed[] = [{
+    title: "Hello"
+  }];
 
-  if (register === undefined || control === undefined || handleSubmit === undefined || formState == undefined ) return null;
-  const { errors } = formState;
-  
+  const _baseData2: APIActionRowComponent[] = [{
+    type: 1,
+    components: [
+      {
+        type: 2,
+        url: "",
+        style: 2,
+        label: "おー"
+      }
+    ]
+  }]
+
+  const { embeds, dispatch: embedsDispatch } = useEmbeds(_baseData);
+  const { actionRows, dispatch: actionRowsDispatch } = useActionRows(_baseData2);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles.formParent}>
-      <input {...register("title", { required: true })} />
-      
-      <input {...register("description", { required: true })} />
-      
-      <Fields {...{control, register}} />
-      <InvalidValueAlert>
-        { errors.title && "タイトルを入力してください。"}
-        { errors.description && "説明を入力してください。" }
-        { errors.fields?.map((e, i) => {
-          if (e.name) return `${i + 1} 個目のフィールド名を入力してください。`
-          if (e.value) return `${i + 1} 個目のフィールドの値を入力してください。`
-        })}
-      </InvalidValueAlert>
+    <form onSubmit={() => onSubmit(embeds, actionRows)} className={styles.root}>
+      <MessageInput className={styles.input}>
+        <EmbedsDispatchContext.Provider value={embedsDispatch}>
+          <div className={styles.embedInputs}>
+            {
+              useMemo(() => embeds.map((embed, i) => (
+                <EmbedInput key={i} embed={embed} index={i} />
+                )
+              ), [embeds])
+            }
+          </div>
+        </EmbedsDispatchContext.Provider>
+        <input type="button" onClick={() => embedsDispatch({ type: "newEmbed" })} value="埋め込みを追加する" />
+        <ActionRowsDispatchContext.Provider value={ actionRowsDispatch }>
+          {
+            useMemo(() => actionRows.map(
+              (row, rowIndex) => (
+                <ActionRowInput key={rowIndex} rowIndex={rowIndex} actionRow={row} />
+              )
+            ), [actionRows])
+          }
+          <NewRowButton />
+        </ActionRowsDispatchContext.Provider>
+      </MessageInput>
+      <MessagePreview embeds={embeds} actionRows={actionRows} className={styles.preview} />
       <input type="submit" />
     </form>
   );

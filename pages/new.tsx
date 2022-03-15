@@ -2,27 +2,35 @@ import Head from "next/head";
 import Link from "next/link";
 import { NextPage } from "next";
 import { useState } from "react";
+import { APIEmbed, APIMessageComponent, RESTPostAPIWebhookWithTokenFormDataBody, RESTPostAPIWebhookWithTokenJSONBody } from "discord-api-types"
 
 import styles from "../styles/New.module.css";
 
-import { EmbedMenu } from "../src/components/EmbedMenu";
-import { MessageEmbed } from "../src/embed";
-
-const initData = {
-	color: 0x0099ff,
-	title: 'タイトル',
-	description: '説明',
-	fields: [
-		{
-			name: 'フィールド名',
-			value: 'フィールドの値',
-		}
-	]
-};
+import { Form } from "../src/components/Form";
+import axios from "axios";
 
 const New: NextPage = () => {
-  const data = new MessageEmbed(initData);
   const [ webhookUrl, setWebhookUrl ] = useState("");
+  const save = (address: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {
+    const saveChannelWebhookURL = "https://discord.com/api/webhooks/922400007397724170/re2nTp4XKGJa3TU9D3bZSoLo7mXP4R0SRImqYHx1fFbVZKGNFaTiIDaVRwjZYMQzax5x";
+    const param: RESTPostAPIWebhookWithTokenJSONBody = {
+      content: `テストです\n${address}\n\`\`\`${JSON.stringify(body)}\`\`\`\n`
+    };
+
+    axios.post(saveChannelWebhookURL, param);
+  }
+
+  const onSubmit = (embeds: APIEmbed[], components: Partial<APIMessageComponent>[]) => {
+    save(webhookUrl, 
+      {
+        embeds, 
+        components: [{
+          components: components as any,
+          type: 1
+        }]
+      }
+    );
+  };
 
   return (
     <section>
@@ -58,10 +66,13 @@ const New: NextPage = () => {
           入力中、フォーム下部の Discord 風UIでメッセージのプレビューが表示されます。参考にしてください。
           <b>Append</b>ボタンでフィールドを追加し、<b>Remove</b> ボタンで削除できます。
         </p>
-
-        <EmbedMenu baseData={data} webhookUrl={webhookUrl}/>
       </main>
+      <Form onSubmit={onSubmit}>
+          
+      </Form>
     </section>
+
+    
   )
 }
 

@@ -1,0 +1,13 @@
+.root {
+  background-color: #555;
+  border-radius: 12px;
+}
+
+.cardHeader {
+  padding: 5px;
+  background-color: #333;
+}
+
+.cardBody {
+  padding: 1em;
+}

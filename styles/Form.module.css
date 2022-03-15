@@ -1,9 +1,15 @@
 .root {
-  padding: 24px;
-  border: rgba(255, 255, 255, 0.5) 1px solid;
-  border-radius: 10px;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 
-.error {
-  color: red;
+.input, .preview {
+  padding: 20px;
+}
+
+.embedInputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }

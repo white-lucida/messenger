@@ -1,23 +1,23 @@
 .header {
-    width: 100vw;
-    height: 3em;
-    padding-left: 2em;
-    display: flex;
-    align-items: center;
-    background-color: rgb(20, 20, 20);
-    color: rgba(255, 255, 255, 0.6);
-    top: 0;
-    left: 0;
+  width: 100vw;
+  height: 3em;
+  padding-left: 2em;
+  display: flex;
+  align-items: center;
+  background-color: rgb(20, 20, 20);
+  color: rgba(255, 255, 255, 0.6);
+  top: 0;
+  left: 0;
 }
 
 .header:hover {
-    background-color: rgba(20, 20, 20, 0.4);
+  background-color: rgba(20, 20, 20, 0.4);
 }
 
 .main {
-    padding: 30px;
+  padding: 30px;
 }
 
 .webhookURL {
-    width: 30em;
+  width: 30em;
 }
