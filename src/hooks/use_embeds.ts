@@ -1,139 +1,150 @@
-import { APIEmbed } from "discord-api-types"
-import { useMemo, useState, useReducer } from "react"
+import { APIEmbed } from 'discord-api-types';
+import { useMemo, useState, useReducer } from 'react';
 
 type useEmbedProps = {
-  defaultValue?: APIEmbed[]
-}
+  defaultValue?: APIEmbed[];
+};
 
 interface BaseEmbedPayload {
-  embedIndex: number
+  embedIndex: number;
 }
 
 interface BaseFieldPayload {
-  fieldIndex: number
+  fieldIndex: number;
 }
 
-type EmbedActions = 
+type EmbedActions =
   | {
-      type: "newEmbed"
+      type: 'newEmbed';
     }
   | {
-      type: "newField",
-      payload: BaseEmbedPayload
+      type: 'newField';
+      payload: BaseEmbedPayload;
     }
   | {
-      type: "setAuthorName",
+      type: 'setAuthorName';
       payload: BaseEmbedPayload & {
-        name: string
-      }
+        name: string;
+      };
     }
   | {
-      type: "setTitle",
+      type: 'setTitle';
       payload: BaseEmbedPayload & {
-        title: string
-      }
+        title: string;
+      };
     }
   | {
-      type: "setDescription",
+      type: 'setDescription';
       payload: BaseEmbedPayload & {
-        description: string
-      }
+        description: string;
+      };
     }
   | {
-      type: "setFieldName",
-      payload: BaseEmbedPayload & BaseFieldPayload & {
-        name: string
-      }
+      type: 'setFieldName';
+      payload: BaseEmbedPayload &
+        BaseFieldPayload & {
+          name: string;
+        };
     }
   | {
-      type: "setFieldValue",
-      payload: BaseEmbedPayload & BaseFieldPayload & {
-        value: string,
-      }
-    }
-
+      type: 'setFieldValue';
+      payload: BaseEmbedPayload &
+        BaseFieldPayload & {
+          value: string;
+        };
+    };
 
 const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
-  const setEmbed = (content: APIEmbed, index: number) => state.map((embed, i) => i === index ? content : embed)
+  const setEmbed = (content: APIEmbed, index: number) =>
+    state.map((embed, i) => (i === index ? content : embed));
   switch (action.type) {
-    case "newEmbed":
-      return [...state, { }]
-    case "newField":
-      {
-        const embedIndex = action.payload.embedIndex;
-        const embed = state[embedIndex];
-        return setEmbed(
-          { 
-            ...embed, 
-            fields: [
-              ...(embed.fields ?? []),
-              { 
-                name: "", 
-                value: "" 
-              }
-            ]
-          }, embedIndex);
-      }
-    case "setAuthorName":
-      {
-        const embedIndex = action.payload.embedIndex;
-        return setEmbed(
-          { 
+    case 'newEmbed':
+      return [...state, {}];
+    case 'newField': {
+      const embedIndex = action.payload.embedIndex;
+      const embed = state[embedIndex];
+      return setEmbed(
+        {
+          ...embed,
+          fields: [
+            ...(embed.fields ?? []),
+            {
+              name: '',
+              value: '',
+            },
+          ],
+        },
+        embedIndex,
+      );
+    }
+    case 'setAuthorName': {
+      const embedIndex = action.payload.embedIndex;
+      return setEmbed(
+        {
+          ...state[embedIndex],
+          author: {
             ...state[embedIndex],
-            author: {
-              ...state[embedIndex],
-              name: action.payload.name
-            }
-          }, embedIndex);
-      }
-    case "setTitle":
-      {
-        const embedIndex = action.payload.embedIndex;
-        return setEmbed(
-          { 
-            ...state[embedIndex],
-            title: action.payload.title
-          }, embedIndex);
-      }
-    case "setDescription":
-      {
-        const embedIndex = action.payload.embedIndex;
-        return setEmbed(
-          { 
-            ...state[embedIndex],
-            description: action.payload.description
-          }, embedIndex);
-      }
-    case "setFieldName":
-    case "setFieldValue":
-      {
-        const embedIndex = action.payload.embedIndex;
-        const fieldIndex = action.payload.fieldIndex;
-        const embed = state[embedIndex];
-        const data = action.type === "setFieldName" ? { name: action.payload.name } : { value: action.payload.value };
-        return setEmbed(
-          {
-            ...embed,
-            fields: embed.fields?.map((field, i) => 
-              fieldIndex === i
-                ? {
+            name: action.payload.name,
+          },
+        },
+        embedIndex,
+      );
+    }
+    case 'setTitle': {
+      const embedIndex = action.payload.embedIndex;
+      return setEmbed(
+        {
+          ...state[embedIndex],
+          title: action.payload.title,
+        },
+        embedIndex,
+      );
+    }
+    case 'setDescription': {
+      const embedIndex = action.payload.embedIndex;
+      return setEmbed(
+        {
+          ...state[embedIndex],
+          description: action.payload.description,
+        },
+        embedIndex,
+      );
+    }
+    case 'setFieldName':
+    case 'setFieldValue': {
+      const embedIndex = action.payload.embedIndex;
+      const fieldIndex = action.payload.fieldIndex;
+      const embed = state[embedIndex];
+      const data =
+        action.type === 'setFieldName'
+          ? { name: action.payload.name }
+          : { value: action.payload.value };
+      return setEmbed(
+        {
+          ...embed,
+          fields: embed.fields?.map((field, i) =>
+            fieldIndex === i
+              ? {
                   ...field,
-                  ...data
+                  ...data,
                 }
-                : field
-            )
-          }, embedIndex)
-      }
+              : field,
+          ),
+        },
+        embedIndex,
+      );
+    }
   }
-}
+};
 
 const useEmbeds = (defaultValue?: APIEmbed[]) => {
   const [embeds, dispatch] = useReducer(reducer, defaultValue ?? []);
 
   return {
-    embeds, dispatch
-  }
-}
+    embeds,
+    dispatch,
+  };
+};
 
 export { useEmbeds };
 export type { EmbedActions };

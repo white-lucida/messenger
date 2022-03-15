@@ -4,7 +4,8 @@
   grid-template-columns: 50% 50%;
 }
 
-.input, .preview {
+.input,
+.preview {
   padding: 20px;
 }
 
