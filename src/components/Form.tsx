@@ -1,10 +1,6 @@
 import styles from '../../styles/Form.module.css';
 import React, { useMemo } from 'react';
-import {
-  APIActionRowComponent,
-  APIEmbed,
-  APIMessageComponent,
-} from 'discord-api-types';
+import { APIActionRowComponent, APIEmbed, APIMessageComponent } from 'discord-api-types';
 import { MessageInput } from './MessageInput';
 import { EmbedInput } from './EmbedInput';
 import { MessagePreview } from './MessagePreview';
@@ -17,9 +13,13 @@ import { NewRowButton } from './NewRowButton';
 
 type FormProps = {
   onSubmit: (embeds: APIEmbed[], components: APIMessageComponent[]) => void;
+  defaultValue?: {
+    embeds: APIEmbed[];
+    actionRows: APIActionRowComponent[];
+  };
 };
 
-const Form: React.VFC<FormProps> = ({ onSubmit }) => {
+const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   /*
    元データから編集用オブジェクトを形成
   */
@@ -43,8 +43,8 @@ const Form: React.VFC<FormProps> = ({ onSubmit }) => {
     },
   ];
 
-  const { embeds, dispatch: embedsDispatch } = useEmbeds(_baseData);
-  const { actionRows, dispatch: actionRowsDispatch } = useActionRows(_baseData2);
+  const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
+  const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
 
   return (
     <form onSubmit={() => onSubmit(embeds, actionRows)} className={styles.root}>
