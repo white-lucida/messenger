@@ -1,9 +1,5 @@
 import { APIEmbed } from 'discord-api-types';
-import { useMemo, useState, useReducer } from 'react';
-
-type useEmbedProps = {
-  defaultValue?: APIEmbed[];
-};
+import { useReducer } from 'react';
 
 interface BaseEmbedPayload {
   embedIndex: number;
@@ -53,8 +49,18 @@ type EmbedActions =
           value: string;
         };
     };
-
+/**
+ *
+ * @param  {APIEmbed[]} state
+ * @param  {EmbedActions} action
+ * @returns APIEmbed
+ */
 const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
+  /**
+   * 特定の`Embed`の内容を変更します
+   * @param  {APIEmbed} content - 変更後の内容
+   * @param  {number} index - 変更したい`Embed`のインデックス
+   */
   const setEmbed = (content: APIEmbed, index: number) =>
     state.map((embed, i) => (i === index ? content : embed));
   switch (action.type) {
@@ -137,6 +143,11 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
   }
 };
 
+/**
+ * `Embed`の管理用Stateを生成します。
+ * @param  {APIEmbed[]} defaultValue? - `Embed`の既定値
+ * @returns state
+ */
 const useEmbeds = (defaultValue?: APIEmbed[]) => {
   const [embeds, dispatch] = useReducer(reducer, defaultValue ?? []);
 
