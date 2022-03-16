@@ -8,10 +8,7 @@ import {
   DiscordEmbedField,
   //@ts-ignore
 } from '@discord-message-components/react';
-import {
-  APIActionRowComponent,
-  APIEmbed,
-} from 'discord-api-types';
+import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import '@discord-message-components/react/styles';
 
 type MessagePreviewProps = {
@@ -21,6 +18,10 @@ type MessagePreviewProps = {
 };
 
 const MessagePreview: React.VFC<MessagePreviewProps> = ({ embeds, actionRows, className }) => {
+  const lbToBr = (txt: string) => {
+    return txt.split(/(\n)/g).map((t) => (t === '\n' ? <br /> : t));
+  };
+
   return (
     <section className={className}>
       <DiscordMessages>
@@ -42,11 +43,15 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({ embeds, actionRows, cl
                 // url="https://discord.js.org/"
                 key={i}
               >
-                {embed.description ?? ''}
+                {embed.description
+                  ?.split(/(\n)/g)
+                  .map((t, i) => (t === '\n' ? <br key={i} /> : t)) ?? ''}
                 <DiscordEmbedFields slot='fields'>
                   {embed.fields?.map((field, i) => (
                     <DiscordEmbedField fieldTitle={field.name ?? ''} inline={false} key={i}>
-                      {field.value ?? ''}
+                      {field.value
+                        ?.split(/(\n)/g)
+                        .map((t, i) => (t === '\n' ? <br key={i} /> : t)) ?? ''}
                     </DiscordEmbedField>
                   )) ?? []}
                 </DiscordEmbedFields>

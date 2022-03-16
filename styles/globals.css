@@ -13,7 +13,8 @@ a {
   text-decoration: none;
 }
 
-input {
+input,
+textarea {
   padding: 10px;
   box-shadow: none;
   background-color: #36393e;

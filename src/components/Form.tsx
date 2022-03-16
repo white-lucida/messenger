@@ -46,8 +46,13 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
 
+  const handleSubmit: React.FormEventHandler = (e) => {
+    e.preventDefault();
+    onSubmit(embeds, actionRows);
+  };
+
   return (
-    <form onSubmit={() => onSubmit(embeds, actionRows)} className={styles.root}>
+    <form onSubmit={handleSubmit} className={styles.root}>
       <MessageInput className={styles.input}>
         <EmbedsDispatchContext.Provider value={embedsDispatch}>
           <div className={styles.embedInputs}>

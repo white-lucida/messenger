@@ -6,6 +6,7 @@ import React from 'react';
 import { APIEmbed } from 'discord-api-types';
 import clsx from 'clsx';
 import styles from '../../styles/EmbedInput.module.css';
+import { PropertyTextArea } from './input/property_textarea';
 
 type EmbedInputProps = {
   index: number;
@@ -44,7 +45,7 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
         </Row>
         <Row>
           <PropertyLabel>説明</PropertyLabel>
-          <PropertyInput
+          <PropertyTextArea
             onChange={(value) =>
               dispatch({
                 type: 'setDescription',
@@ -92,7 +93,7 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
               }
               value={field.name}
             />
-            <PropertyInput
+            <PropertyTextArea
               onChange={(value) =>
                 dispatch({
                   type: 'setFieldValue',

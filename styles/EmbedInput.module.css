@@ -1,13 +1,22 @@
 .root {
-  background-color: #555;
+  background-color: #364148;
   border-radius: 12px;
+  min-width: 24em;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .cardHeader {
-  padding: 5px;
-  background-color: #333;
+  border-radius: 12px 12px 0 0;
+  padding: 12px 1em;
+  background-color: #364148;
 }
 
 .cardBody {
+  background-color: #4c5359;
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   padding: 1em;
+  flex-grow: 1.2;
 }
