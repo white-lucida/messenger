@@ -49,8 +49,19 @@ type EmbedActions =
           value: string;
         };
     };
+
 /**
- *
+ * 特定の`Embed`を変更したStateを返します
+ * @param  {APIEmbed[]} state - 変更したいState
+ * @param  {APIEmbed} content - 変更する`Embed`
+ * @param  {number} index - 変更先の`Embed`のインデックス
+ * @returns 変更後のState
+ */
+const setEmbed = (state: APIEmbed[], content: APIEmbed, index: number) =>
+  state.map((embed, i) => (i === index ? content : embed));
+
+/**
+ * `Embed`のState管理用Reducerの実装
  * @param  {APIEmbed[]} state
  * @param  {EmbedActions} action
  * @returns APIEmbed
@@ -61,8 +72,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
    * @param  {APIEmbed} content - 変更後の内容
    * @param  {number} index - 変更したい`Embed`のインデックス
    */
-  const setEmbed = (content: APIEmbed, index: number) =>
-    state.map((embed, i) => (i === index ? content : embed));
+
   switch (action.type) {
     case 'newEmbed':
       return [...state, {}];
@@ -70,6 +80,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
       const embedIndex = action.payload.embedIndex;
       const embed = state[embedIndex];
       return setEmbed(
+        state,
         {
           ...embed,
           fields: [
@@ -86,6 +97,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     case 'setAuthorName': {
       const embedIndex = action.payload.embedIndex;
       return setEmbed(
+        state,
         {
           ...state[embedIndex],
           author: {
@@ -99,6 +111,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     case 'setTitle': {
       const embedIndex = action.payload.embedIndex;
       return setEmbed(
+        state,
         {
           ...state[embedIndex],
           title: action.payload.title,
@@ -109,6 +122,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     case 'setDescription': {
       const embedIndex = action.payload.embedIndex;
       return setEmbed(
+        state,
         {
           ...state[embedIndex],
           description: action.payload.description,
@@ -126,6 +140,7 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
           ? { name: action.payload.name }
           : { value: action.payload.value };
       return setEmbed(
+        state,
         {
           ...embed,
           fields: embed.fields?.map((field, i) =>
