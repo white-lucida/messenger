@@ -9,7 +9,6 @@
     "format": "prettier --write --ignore-path .gitignore \"./**/*.{js,jsx,ts,tsx,json,css}\""
   },
   "dependencies": {
-    "@danktuary/react-discord-message": "^1.0.2",
     "@discord-message-components/react": "^0.2.1",
     "axios": "^0.26.1",
     "clsx": "^1.1.1",
