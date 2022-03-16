@@ -6,6 +6,11 @@ const ActionRowsDispatchContext = React.createContext<Dispatch<ActionRowsActions
 );
 
 export { ActionRowsDispatchContext };
+
+/**
+ * `ActionRow`Reducerの`dispatch`をContextから取得します
+ *  @returns `dispatch`
+ */
 export const useActionRow = () => {
   const context = useContext(ActionRowsDispatchContext);
   if (context === undefined) throw new Error('action rows dispatch is still undefined');
