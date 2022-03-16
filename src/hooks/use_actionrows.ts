@@ -29,6 +29,7 @@ type ActionRowsActions =
         label: string;
       };
     }
+  /*
   | {
       type: 'setButtonURL';
       payload: {
@@ -37,6 +38,10 @@ type ActionRowsActions =
         url: string;
       };
     }
+    */
+  /* 
+    urlを設定する場合型の制御が難しいため現時点では実装を見送ります
+   */
   | {
       type: 'toggleButtonDisabled';
       payload: {
