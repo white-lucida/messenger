@@ -20,29 +20,6 @@ type FormProps = {
 };
 
 const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
-  /*
-   元データから編集用オブジェクトを形成
-  */
-  const _baseData: APIEmbed[] = [
-    {
-      title: 'Hello',
-    },
-  ];
-
-  const _baseData2: APIActionRowComponent[] = [
-    {
-      type: 1,
-      components: [
-        {
-          type: 2,
-          url: '',
-          style: 2,
-          label: 'おー',
-        },
-      ],
-    },
-  ];
-
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
 
