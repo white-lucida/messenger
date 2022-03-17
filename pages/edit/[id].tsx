@@ -4,6 +4,7 @@ import { Form } from '../../src/components/Form';
 
 type EditorProps = {
   messageURL: string;
+  content: string;
   embeds: APIEmbed[];
   actionRows: APIActionRowComponent[];
 };
@@ -19,6 +20,7 @@ export const getStaticProps: GetStaticProps<EditorProps> = async () => {
   return {
     props: {
       messageURL: '',
+      content: '',
       embeds: [],
       actionRows: [],
     } /* この部分をFirestoreの各ドキュメントから取得する */,
@@ -26,8 +28,8 @@ export const getStaticProps: GetStaticProps<EditorProps> = async () => {
   };
 };
 
-const Editor: NextPage<EditorProps> = ({ embeds, actionRows }) => {
-  return <Form defaultValue={{ embeds, actionRows }} onSubmit={() => {}} />;
+const Editor: NextPage<EditorProps> = ({ content, embeds, actionRows }) => {
+  return <Form defaultValue={{ content, embeds, actionRows }} onSubmit={() => {}} />;
 };
 
 export default Editor;
