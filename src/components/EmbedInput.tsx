@@ -10,6 +10,7 @@ import { PropertyTextArea } from './input/property_textarea';
 import { EmbedInputTab } from './EmbedInputTab';
 import { useInputTab } from '../hooks/use_inputtab';
 import { EmbedInputTabButton } from './EmbedInputTabButton';
+import { CirclePicker, TwitterPicker } from 'react-color';
 
 type EmbedInputProps = {
   index: number;
@@ -138,6 +139,14 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
           />
         </EmbedInputTab>
         <EmbedInputTab isEnabled={isCurrentTab('その他')}>
+          <CirclePicker
+            onChangeComplete={(color) =>
+              dispatch({
+                type: 'changeColor',
+                payload: { embedIndex: index, color: color.hex },
+              })
+            }
+          />
           <input
             type='button'
             onClick={() => dispatch({ type: 'removeEmbed', payload: { embedIndex: index } })}

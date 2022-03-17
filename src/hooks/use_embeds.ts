@@ -52,6 +52,10 @@ type EmbedActions =
   | {
       type: 'removeEmbed';
       payload: BaseEmbedPayload;
+    }
+  | {
+      type: 'changeColor';
+      payload: BaseEmbedPayload & { color: string };
     };
 
 /**
@@ -161,6 +165,17 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     }
     case 'removeEmbed': {
       return state.filter((_, index) => index !== action.payload.embedIndex);
+    }
+    case 'changeColor': {
+      const embedIndex = action.payload.embedIndex;
+      return setEmbed(
+        state,
+        {
+          ...state[embedIndex],
+          color: Number.parseInt(action.payload.color.substring(1), 16),
+        },
+        embedIndex,
+      );
     }
   }
 };

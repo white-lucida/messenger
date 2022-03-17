@@ -39,7 +39,7 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
             {embeds.map((embed, i) => (
               <DiscordEmbed
                 // authorImage=
-                borderColor='#0099ff'
+                borderColor={embed.color !== undefined ? `#${embed.color.toString(16)}` : undefined}
                 embedTitle={embed.title ?? ''}
                 slot='embeds'
                 // footerImage="https://i.imgur.com/wSTFkRM.png"
