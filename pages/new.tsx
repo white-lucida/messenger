@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { NextPage } from 'next';
 import { useState } from 'react';
 import {
+  APIActionRowComponent,
   APIEmbed,
   APIMessageComponent,
   RESTPostAPIWebhookWithTokenJSONBody,
@@ -15,25 +16,22 @@ import axios from 'axios';
 
 const New: NextPage = () => {
   const [webhookUrl, setWebhookUrl] = useState('');
-  const save = (address: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {
-    const saveChannelWebhookURL =
-      'https://discord.com/api/webhooks/922400007397724170/re2nTp4XKGJa3TU9D3bZSoLo7mXP4R0SRImqYHx1fFbVZKGNFaTiIDaVRwjZYMQzax5x';
-    const param: RESTPostAPIWebhookWithTokenJSONBody = {
-      content: `テストです\n${address}\n\`\`\`${JSON.stringify(body)}\`\`\`\n`,
-    };
+  const save = (address: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {};
 
-    axios.post(saveChannelWebhookURL, param);
-  };
-
-  const onSubmit = (embeds: APIEmbed[], components: Partial<APIMessageComponent>[]) => {
-    save(webhookUrl, {
+  const onSubmit = (embeds: APIEmbed[], actionRows: APIActionRowComponent[]) => {
+    console.log(
+      JSON.parse(
+        JSON.stringify({
+          url: 'https://discord.com/channels/953514536781115392/953514536781115394',
+          embeds,
+          actionRows,
+        }),
+      ),
+    );
+    axios.post('/api/send', {
+      url: 'https://discord.com/channels/953514536781115392/953514536781115394',
       embeds,
-      components: [
-        {
-          components: components as any,
-          type: 1,
-        },
-      ],
+      actionRows,
     });
   };
 
