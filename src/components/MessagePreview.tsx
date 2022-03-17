@@ -12,16 +12,21 @@ import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import '@discord-message-components/react/styles';
 
 type MessagePreviewProps = {
+  children: string;
   embeds: APIEmbed[];
   actionRows: APIActionRowComponent[];
   className?: string;
 };
 
-const MessagePreview: React.VFC<MessagePreviewProps> = ({ embeds, actionRows, className }) => {
-  const lbToBr = (txt: string) => {
-    return txt.split(/(\n)/g).map((t) => (t === '\n' ? <br /> : t));
-  };
+const split = (value: string) =>
+  value.split(/(\n)/g).map((t, i) => (t === '\n' ? <br key={i} /> : t));
 
+const MessagePreview: React.VFC<MessagePreviewProps> = ({
+  children,
+  embeds,
+  actionRows,
+  className,
+}) => {
   return (
     <section className={className}>
       <DiscordMessages>
@@ -29,6 +34,7 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({ embeds, actionRows, cl
           author='White-Lucida'
           avatar='https://cdn.discordapp.com/icons/813577333516402728/a1b8a9ebbf6382f916539a10b5f79315.png'
         >
+          {split(children)}
           <div slot='embeds'>
             {embeds.map((embed, i) => (
               <DiscordEmbed
@@ -43,9 +49,7 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({ embeds, actionRows, cl
                 // url="https://discord.js.org/"
                 key={i}
               >
-                {embed.description
-                  ?.split(/(\n)/g)
-                  .map((t, i) => (t === '\n' ? <br key={i} /> : t)) ?? ''}
+                {split(embed.description ?? '')}
                 <DiscordEmbedFields slot='fields'>
                   {embed.fields?.map((field, i) => (
                     <DiscordEmbedField fieldTitle={field.name ?? ''} inline={false} key={i}>
