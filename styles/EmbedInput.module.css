@@ -15,8 +15,13 @@
 
 .cardBody {
   background-color: #4c5359;
-  border-radius: 12px;
+  border-radius: 0 0 12px 12px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   padding: 1em;
   flex-grow: 1.2;
+}
+
+.cardTabButtons {
+  display: flex;
+  flex-direction: row;
 }

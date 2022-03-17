@@ -18,9 +18,10 @@ const New: NextPage = () => {
   const [channelUrl, setChannelUrl] = useState('');
   const save = (address: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {};
 
-  const onSubmit = (embeds: APIEmbed[], actionRows: APIActionRowComponent[]) => {
+  const onSubmit = (content: string, embeds: APIEmbed[], actionRows: APIActionRowComponent[]) => {
     const data = {
       url: channelUrl,
+      content,
       embeds,
       actionRows,
     };

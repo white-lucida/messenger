@@ -28,6 +28,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
     throw new Error();
   }
   /** 型ガードを追加したい */
+  const content: string = body.content;
   const embeds: APIEmbed[] = body.embeds;
   const actionRows: APIActionRowComponent[] = body.actionRows;
 
@@ -39,6 +40,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
     .post<RESTPostAPIChannelMessageJSONBody>(
       getMessagePostEndPoint(getChannelIDfromURL(url)),
       {
+        content,
         embeds,
         components: actionRows,
       },
