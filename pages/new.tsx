@@ -15,24 +15,16 @@ import { Form } from '../src/components/Form';
 import axios from 'axios';
 
 const New: NextPage = () => {
-  const [webhookUrl, setWebhookUrl] = useState('');
+  const [channelUrl, setChannelUrl] = useState('');
   const save = (address: string, body: RESTPostAPIWebhookWithTokenJSONBody) => {};
 
   const onSubmit = (embeds: APIEmbed[], actionRows: APIActionRowComponent[]) => {
-    console.log(
-      JSON.parse(
-        JSON.stringify({
-          url: 'https://discord.com/channels/953514536781115392/953514536781115394',
-          embeds,
-          actionRows,
-        }),
-      ),
-    );
-    axios.post('/api/send', {
-      url: 'https://discord.com/channels/953514536781115392/953514536781115394',
+    const data = {
+      url: channelUrl,
       embeds,
       actionRows,
-    });
+    };
+    axios.post('/api/send', data);
   };
 
   return (
@@ -52,7 +44,11 @@ const New: NextPage = () => {
         <h1> Webhook の URL </h1>
         <p>埋め込みを投稿する Webhook の URL を入力してください。</p>
         <p>
-          <input className={styles.webhookURL} onChange={(e) => setWebhookUrl(e.target.value)} />
+          <input
+            className={styles.channelURL}
+            onChange={(e) => setChannelUrl(e.target.value)}
+            value={channelUrl ?? ''}
+          />
         </p>
 
         <h1> 入力フォーム </h1>

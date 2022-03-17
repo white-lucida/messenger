@@ -39,7 +39,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
     .post<RESTPostAPIChannelMessageJSONBody>(
       getMessagePostEndPoint(getChannelIDfromURL(url)),
       {
-        content: 'hello',
         embeds,
         components: actionRows,
       },
