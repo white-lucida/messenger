@@ -3,11 +3,13 @@ import axios from 'axios';
 import {
   APIActionRowComponent,
   APIEmbed,
-  RESTPostAPIChannelMessageJSONBody,
+  RESTPostAPIChannelMessageResult,
 } from 'discord-api-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type SendResponse = {};
+type SendResponse = {
+  messageID: string;
+};
 
 const getChannelIDfromURL = (url: string): string => {
   const matcher = url.match(/https:\/\/discord\.com\/channels\/.+\/(.+)/);
@@ -37,7 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
   if (token === undefined) throw new Error();
 
   axios
-    .post<RESTPostAPIChannelMessageJSONBody>(
+    .post<RESTPostAPIChannelMessageResult>(
       getMessagePostEndPoint(getChannelIDfromURL(url)),
       {
         content,
@@ -48,9 +50,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
     )
     .then((value) => {
       // TODO: valueを返却
-      res.status(200).json({});
+      res.status(200).json({
+        messageID: value.data.id,
+      });
     })
     .catch((e) => {
-      res.status(400).json({});
+      res.status(400);
     });
 }
