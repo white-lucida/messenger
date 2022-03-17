@@ -39,6 +39,17 @@ const post = async (
     embeds: data.embeds,
     actionRows: data.components,
   });
+  return res.data.id;
+  /*
+  try {
+    await axios.post(`/api/revalidate?secret=${process.env.NEXTJS_SECRET}`, {
+      messageID: res.data.id,
+      channelID: data.channelID,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+  */
 };
 
 // 上記関数は外部から注入したい（DI）
@@ -72,9 +83,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
   )
     .then((value) => {
       // TODO: valueを返却
-      res.status(200);
+      res.status(200).end();
     })
     .catch((e) => {
-      res.status(400);
+      res.status(400).end();
     });
 }
