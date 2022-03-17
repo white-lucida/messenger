@@ -27,6 +27,7 @@ const Home: NextPage = () => {
 
         <div className={styles.menu}>
           <LinkButton href='/new'>新しく作る</LinkButton>
+          <LinkButton href='/edit'>編集する</LinkButton>
         </div>
       </section>
     </div>

@@ -32,7 +32,13 @@ const post = async (
   config: AxiosRequestConfig<any>,
 ) => {
   const res = await axios.post<RESTPostAPIChannelMessageResult>(url, data, config);
-  await write(data.channelID, res.data.id, data.content, data.embeds, data.components);
+  await write({
+    channelID: data.channelID,
+    messageID: res.data.id,
+    content: data.content,
+    embeds: data.embeds,
+    actionRows: data.components,
+  });
 };
 
 // 上記関数は外部から注入したい（DI）
