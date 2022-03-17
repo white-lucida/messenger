@@ -104,7 +104,11 @@ const reducer = (
     case 'newRow':
       return [...state, { type: 1, components: [] }];
     case 'newButton':
-      return addComponent(state, { type: 2, label: '', url: '', style: 1 }, action.payload.index);
+      return addComponent(
+        state,
+        { type: 2, label: '', custom_id: Date.now().toString(), style: 1 }, // 暫定の実装, customIDとURLの設定を実装したら変更する
+        action.payload.index,
+      );
     case 'newSelectMenu':
       return addComponent(state, { type: 3, custom_id: '' }, action.payload.index);
     case 'setButtonLabel':

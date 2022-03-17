@@ -12,7 +12,7 @@ import { ActionRowsDispatchContext } from '../hooks/use_actionrow';
 import { NewRowButton } from './NewRowButton';
 
 type FormProps = {
-  onSubmit: (embeds: APIEmbed[], components: APIMessageComponent[]) => void;
+  onSubmit: (embeds: APIEmbed[], components: APIActionRowComponent[]) => void;
   defaultValue?: {
     embeds: APIEmbed[];
     actionRows: APIActionRowComponent[];
