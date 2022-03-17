@@ -40,7 +40,7 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
       <div className={styles.cardTabButtons}>
         {tabNames.map((name) => (
           <EmbedInputTabButton onClick={() => changeTab(name)} isEnabled={isCurrentTab(name)}>
-            {name}{' '}
+            {name}
           </EmbedInputTabButton>
         ))}
       </div>
