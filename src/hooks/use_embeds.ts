@@ -48,6 +48,10 @@ type EmbedActions =
         BaseFieldPayload & {
           value: string;
         };
+    }
+  | {
+      type: 'removeEmbed';
+      payload: BaseEmbedPayload;
     };
 
 /**
@@ -154,6 +158,9 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
         },
         embedIndex,
       );
+    }
+    case 'removeEmbed': {
+      return state.filter((_, index) => index !== action.payload.embedIndex);
     }
   }
 };

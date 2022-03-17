@@ -26,7 +26,13 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
 
   return (
     <section className={clsx(className, styles.root)}>
-      <div className={styles.cardHeader}>{index + 1} </div>
+      <div className={styles.cardHeader}>
+        {index + 1}
+        <input
+          type='button'
+          onClick={() => dispatch({ type: 'removeEmbed', payload: { embedIndex: index } })}
+        />
+      </div>
       <div className={styles.cardBody}>
         <Row>
           <PropertyLabel>タイトル</PropertyLabel>
