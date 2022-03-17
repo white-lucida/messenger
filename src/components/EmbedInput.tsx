@@ -17,7 +17,7 @@ type EmbedInputProps = {
   className?: string;
 };
 
-const tabNames = ['基本情報', '著者', 'フィールド'] as const;
+const tabNames = ['基本情報', '著者', 'フィールド', 'その他'] as const;
 type TabName = typeof tabNames[number];
 
 export type { TabName };
@@ -35,13 +35,7 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
 
   return (
     <section className={clsx(className, styles.root)}>
-      <div className={styles.cardHeader}>
-        {index + 1}
-        <input
-          type='button'
-          onClick={() => dispatch({ type: 'removeEmbed', payload: { embedIndex: index } })}
-        />
-      </div>
+      <div className={styles.cardHeader}>{index + 1}</div>
 
       <div className={styles.cardTabButtons}>
         {tabNames.map((name) => (
@@ -141,6 +135,13 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
             type='button'
             onClick={() => dispatch({ type: 'newField', payload: { embedIndex: index } })}
             value='フィールドを追加する'
+          />
+        </EmbedInputTab>
+        <EmbedInputTab isEnabled={isCurrentTab('その他')}>
+          <input
+            type='button'
+            onClick={() => dispatch({ type: 'removeEmbed', payload: { embedIndex: index } })}
+            value='この埋め込みを削除する'
           />
         </EmbedInputTab>
       </div>
