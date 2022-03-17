@@ -1,11 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import {
   APIActionRowComponent,
   APIEmbed,
   RESTPostAPIChannelMessageResult,
 } from 'discord-api-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { write } from '../../src/utils/firestore';
 
 type SendResponse = {
   messageID: string;
@@ -19,6 +20,20 @@ const getChannelIDfromURL = (url: string): string => {
 
 const getMessagePostEndPoint = (channelID: string): string =>
   `https://discord.com/api/v9/channels/${channelID}/messages`;
+
+const post = async (
+  url: string,
+  data: {
+    channelID: string;
+    content: string;
+    embeds: APIEmbed[];
+    components: APIActionRowComponent[];
+  },
+  config: AxiosRequestConfig<any>,
+) => {
+  const res = await axios.post<RESTPostAPIChannelMessageResult>(url, data, config);
+  await write(data.channelID, res.data.id, data.content, data.embeds, data.components);
+};
 
 // 上記関数は外部から注入したい（DI）
 export default function handler(req: NextApiRequest, res: NextApiResponse<SendResponse>) {
@@ -35,24 +50,23 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
   const actionRows: APIActionRowComponent[] = body.actionRows;
 
   const token = process.env.DISCORD_TOKEN;
+  const channelID = getChannelIDfromURL(url);
 
   if (token === undefined) throw new Error();
 
-  axios
-    .post<RESTPostAPIChannelMessageResult>(
-      getMessagePostEndPoint(getChannelIDfromURL(url)),
-      {
-        content,
-        embeds,
-        components: actionRows,
-      },
-      { headers: { 'Content-Type': 'application/json', Authorization: `Bot ${token}` } },
-    )
+  post(
+    getMessagePostEndPoint(channelID),
+    {
+      channelID,
+      content,
+      embeds,
+      components: actionRows,
+    },
+    { headers: { 'Content-Type': 'application/json', Authorization: `Bot ${token}` } },
+  )
     .then((value) => {
       // TODO: valueを返却
-      res.status(200).json({
-        messageID: value.data.id,
-      });
+      res.status(200);
     })
     .catch((e) => {
       res.status(400);
