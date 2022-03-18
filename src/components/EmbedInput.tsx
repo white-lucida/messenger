@@ -101,9 +101,6 @@ const EmbedInput: React.VFC<EmbedInputProps> = React.memo(function Inside({
           </Row>
         </EmbedInputTab>
         <EmbedInputTab isEnabled={isCurrentTab('フィールド')}>
-          <Row>
-            <PropertyLabel>フィールド</PropertyLabel>
-          </Row>
           {embed.fields?.map((field, i) => (
             <Row key={i}>
               <PropertyLabel>{i + 1}</PropertyLabel>
