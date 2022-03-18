@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   APIActionRowComponent,
   APIEmbed,
@@ -13,6 +13,7 @@ import { Form } from '../src/components/Form';
 
 import styles from '../styles/New.module.css';
 import clsx from 'clsx';
+import { useReloadAlert } from '../src/hooks/use_reloadalert';
 
 const New: NextPage = () => {
   const [channelUrl, setChannelUrl] = useState('');
