@@ -4,4 +4,5 @@
 
 .channelURL {
   width: 30em;
+  max-width: 80vw; /* スマートフォンでの画面はみ出しを防止 */
 }

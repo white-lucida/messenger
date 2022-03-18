@@ -20,64 +20,62 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
   const dispatch = useActionRow();
   const { isCurrentTab, changeTab } = useCardTab<TabName>('テキスト');
   return (
-    <section>
-      <Card>
-        <Header>{buttonIndex + 1}</Header>
-        <Panel>
-          {tabNames.map((name, i) => (
-            <TabButton
-              key={i}
-              onClick={() => changeTab(name)}
-              tabName={name}
-              isEnabled={isCurrentTab(name)}
-            />
-          ))}
-        </Panel>
-        <Body>
-          <Content isEnabled={isCurrentTab('テキスト')}>
-            <Input
-              value={button.label ?? ''}
-              onChange={(value) =>
-                dispatch({
-                  type: 'setButtonLabel',
-                  payload: {
-                    label: value,
-                    rowIndex,
-                    buttonIndex,
-                  },
-                })
-              }
-            />
-          </Content>
-          <Content isEnabled={isCurrentTab('スタイル')}>
-            <></>
-          </Content>
-          <Content isEnabled={isCurrentTab('付加情報')}>
-            <></>
-          </Content>
-          <Content isEnabled={isCurrentTab('その他')}>
-            <Row>
-              <Label>ボタンを使用可能にする</Label>
-              <Toggle
-                onClick={() =>
-                  dispatch({ type: 'toggleButtonDisabled', payload: { rowIndex, buttonIndex } })
-                }
-                isEnabled={!(button.disabled ?? false)}
-              />
-            </Row>
-            <UIButton
-              label='このボタンを削除する'
+    <Card>
+      <Header>{buttonIndex + 1}</Header>
+      <Panel>
+        {tabNames.map((name, i) => (
+          <TabButton
+            key={i}
+            onClick={() => changeTab(name)}
+            tabName={name}
+            isEnabled={isCurrentTab(name)}
+          />
+        ))}
+      </Panel>
+      <Body>
+        <Content isEnabled={isCurrentTab('テキスト')}>
+          <Input
+            value={button.label ?? ''}
+            onChange={(value) =>
+              dispatch({
+                type: 'setButtonLabel',
+                payload: {
+                  label: value,
+                  rowIndex,
+                  buttonIndex,
+                },
+              })
+            }
+          />
+        </Content>
+        <Content isEnabled={isCurrentTab('スタイル')}>
+          <></>
+        </Content>
+        <Content isEnabled={isCurrentTab('付加情報')}>
+          <></>
+        </Content>
+        <Content isEnabled={isCurrentTab('その他')}>
+          <Row>
+            <Label>ボタンを使用可能にする</Label>
+            <Toggle
               onClick={() =>
-                dispatch({
-                  type: 'removeComponent',
-                  payload: { rowIndex, componentIndex: buttonIndex },
-                })
+                dispatch({ type: 'toggleButtonDisabled', payload: { rowIndex, buttonIndex } })
               }
+              isEnabled={!(button.disabled ?? false)}
             />
-          </Content>
-        </Body>
-      </Card>
-    </section>
+          </Row>
+          <UIButton
+            label='このボタンを削除する'
+            onClick={() =>
+              dispatch({
+                type: 'removeComponent',
+                payload: { rowIndex, componentIndex: buttonIndex },
+              })
+            }
+          />
+        </Content>
+      </Body>
+    </Card>
   );
 };
 

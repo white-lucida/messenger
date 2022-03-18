@@ -3,6 +3,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import React from 'react';
+import { Button } from '../src/components/ui';
+import { signOut } from 'next-auth/react';
 
 const LinkButton = ({ href, children }: { href: string; children: React.ReactNode }) => {
   return (
@@ -29,6 +31,8 @@ const Home: NextPage = () => {
           <LinkButton href='/new'>新しく作る</LinkButton>
           <LinkButton href='/edit'>編集する</LinkButton>
         </div>
+
+        <Button onClick={() => signOut()} label='ログアウト' />
       </section>
     </div>
   );
