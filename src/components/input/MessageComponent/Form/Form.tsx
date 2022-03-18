@@ -31,7 +31,7 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ actionRow, rowIn
     [actionRow.components, rowIndex],
   );
   return (
-    <ActionRow>
+    <ActionRow index={rowIndex}>
       <div className={styles.children}>{componentInputs}</div>
       <NewComponentButton
         onClick={() => dispatch({ type: 'newButton', payload: { index: rowIndex } })}

@@ -55,6 +55,12 @@ type ActionRowsActions =
         rowIndex: number;
         componentIndex: number;
       };
+    }
+  | {
+      type: 'removeRow';
+      payload: {
+        rowIndex: number;
+      };
     };
 
 /**
@@ -148,6 +154,8 @@ const reducer = (
             }
           : row,
       );
+    case 'removeRow':
+      return state.filter((_, index) => index !== action.payload.rowIndex);
   }
 };
 
