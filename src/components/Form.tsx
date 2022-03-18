@@ -36,35 +36,39 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.root}>
-      <MessageInput className={styles.input}>
-        <h3> 内容 </h3>
-        <TextArea onChange={(value) => setContent(value)} value={content} />
-        <h3> 埋め込み </h3>
-        <EmbedsDispatchContext.Provider value={embedsDispatch}>
-          <div className={styles.embedInputs}>
-            {useMemo(
-              () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
-              [embeds],
-            )}
-          </div>
-        </EmbedsDispatchContext.Provider>
-        <Button onClick={() => embedsDispatch({ type: 'newEmbed' })} label='埋め込みを追加する' />
+      <div className={styles.main}>
+        <MessageInput className={styles.input}>
+          <h3> 内容 </h3>
+          <TextArea onChange={(value) => setContent(value)} value={content} />
+          <h3> 埋め込み </h3>
+          <EmbedsDispatchContext.Provider value={embedsDispatch}>
+            <div className={styles.embeds}>
+              {useMemo(
+                () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
+                [embeds],
+              )}
+            </div>
+          </EmbedsDispatchContext.Provider>
+          <Button onClick={() => embedsDispatch({ type: 'newEmbed' })} label='埋め込みを追加する' />
 
-        <h3> Message Component </h3>
-        <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
-          {useMemo(
-            () =>
-              actionRows.map((row, rowIndex) => (
-                <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
-              )),
-            [actionRows],
-          )}
-          <NewRowButton />
-        </ActionRowsDispatchContext.Provider>
-      </MessageInput>
-      <MessagePreview embeds={embeds} actionRows={actionRows} className={styles.preview}>
-        {content}
-      </MessagePreview>
+          <h3> Message Component </h3>
+          <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
+            <div className={styles.actionRows}>
+              {useMemo(
+                () =>
+                  actionRows.map((row, rowIndex) => (
+                    <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
+                  )),
+                [actionRows],
+              )}
+            </div>
+            <NewRowButton />
+          </ActionRowsDispatchContext.Provider>
+        </MessageInput>
+        <MessagePreview embeds={embeds} actionRows={actionRows} className={styles.preview}>
+          {content}
+        </MessagePreview>
+      </div>
       <DiscordLikeButton className={styles.submit} label='送信する' onClick={handleSubmit} />
     </form>
   );

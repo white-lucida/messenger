@@ -41,7 +41,7 @@ const New: NextPage = () => {
         <h1> 新規メッセージ </h1>
         <p> 新しいメッセージを作成します。 </p>
 
-        <h1> チャンネルのURL </h1>
+        <h3> チャンネルのURL </h3>
         <p> メッセージを投稿するDiscordチャンネルのURLを入力してください。</p>
         <p>
           <input
@@ -50,9 +50,6 @@ const New: NextPage = () => {
             value={channelUrl ?? ''}
           />
         </p>
-
-        <h1> 入力フォーム </h1>
-        <p> 内容を入力してください。 </p>
       </main>
       <Form onSubmit={onSubmit}></Form>
     </section>

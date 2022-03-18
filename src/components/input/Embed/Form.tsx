@@ -7,7 +7,7 @@ import { Card, Body as CardBody, Header as CardHeader } from '../Card';
 import { Button as TabButton, Panel as TabPanel, Content } from '../Card/Tab';
 
 import { useEmbed } from '../../../hooks/use_embed';
-import { useInputTab } from '../../../hooks/use_inputtab';
+import { useCardTab } from '../../../hooks/use_cardtab';
 import { Button } from '../../ui';
 
 type FormProps = {
@@ -19,13 +19,11 @@ type FormProps = {
 const tabNames = ['基本情報', '著者', 'フィールド', 'その他'] as const;
 type TabName = typeof tabNames[number];
 
-export type { TabName };
-
 const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, className }) {
   /*
     react/display-name エラーが発生したため、functionを使用
   */
-  const { isCurrentTab, changeTab } = useInputTab(tabNames, '基本情報');
+  const { isCurrentTab, changeTab } = useCardTab<TabName>('基本情報');
   const dispatch = useEmbed();
 
   return (

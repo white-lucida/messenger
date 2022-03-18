@@ -1,0 +1,6 @@
+.root {
+  padding: 5px;
+  background-color: var(--action-row-background-color);
+  gap: 12px;
+  border-radius: 12px;
+}

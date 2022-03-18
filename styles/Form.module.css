@@ -1,20 +1,32 @@
 .root {
-  display: grid;
-  grid-template-columns: 50% 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  display: flex;
+  flex-wrap: wrap-reverse;
 }
 
 .input,
 .preview {
-  padding: 20px;
+  padding: 30px;
+  width: 50%;
+  min-width: 20em;
 }
 
-.embedInputs {
+.embeds,
+.actionRows {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
+}
+
+.actionRows {
+  flex-direction: column;
 }
 
 .submit {
+  margin: 30px;
   width: 10em;
 }

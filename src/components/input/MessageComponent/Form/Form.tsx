@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 import { APIActionRowComponent } from 'discord-api-types';
 
-import { Button } from '../Input';
-import { SelectMenu } from '../Input';
+import { ActionRow, Button, SelectMenu } from '../Input';
+import { Button as NewComponentButton } from '../../../ui/Button';
 
 import { useActionRow } from '../../../../hooks/use_actionrow';
+
+import styles from './Form.module.css';
 
 type FormProps = {
   actionRow: APIActionRowComponent;
@@ -29,14 +31,13 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ actionRow, rowIn
     [actionRow.components, rowIndex],
   );
   return (
-    <section>
-      {componentInputs}
-      <input
-        type='button'
+    <ActionRow>
+      <div className={styles.children}>{componentInputs}</div>
+      <NewComponentButton
         onClick={() => dispatch({ type: 'newButton', payload: { index: rowIndex } })}
-        value='ボタンを追加する'
+        label='ボタンを追加する'
       />
-    </section>
+    </ActionRow>
   );
 });
 
