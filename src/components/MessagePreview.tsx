@@ -67,7 +67,11 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
               {row.components.map((component, x) => {
                 switch (component.type) {
                   case 2:
-                    return <DiscordButton key={x}>{component.label ?? ''}</DiscordButton>;
+                    return (
+                      <DiscordButton key={x} disabled={component.disabled ?? false}>
+                        {component.label ?? ''}
+                      </DiscordButton>
+                    );
                 }
               })}
             </DiscordButtons>

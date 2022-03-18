@@ -16,7 +16,7 @@
   align-items: center;
   position: absolute;
   z-index: 3;
-  transition: all 1s;
+  transition: all 0.5s;
 }
 
 .enabled {

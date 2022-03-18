@@ -1,10 +1,11 @@
 import { APIButtonComponent } from 'discord-api-types';
 import { useActionRow } from '../../../../../hooks/use_actionrow';
 import { Card, Header, Body } from '../../../Card';
-import { Input } from '../../../Property';
+import { Input, Label, Row } from '../../../Property';
 import { Button as TabButton, Content, Panel } from '../../../Card/Tab';
 import { Button as UIButton } from '../../../../ui/Button';
 import { useCardTab } from '../../../../../hooks/use_cardtab';
+import { Toggle } from '../../../Property';
 
 type ButtonProps = {
   button: APIButtonComponent;
@@ -55,6 +56,15 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
             <></>
           </Content>
           <Content isEnabled={isCurrentTab('その他')}>
+            <Row>
+              <Label>ボタンを使用可能にする</Label>
+              <Toggle
+                onClick={() =>
+                  dispatch({ type: 'toggleButtonDisabled', payload: { rowIndex, buttonIndex } })
+                }
+                isEnabled={!(button.disabled ?? false)}
+              />
+            </Row>
             <UIButton
               label='このボタンを削除する'
               onClick={() =>
