@@ -43,6 +43,7 @@ export const getStaticProps: GetStaticProps<EditorProps, EditorParams> = async (
         embeds: [],
         actionRows: [],
       },
+      notFound: true,
     };
   const messageDocument = await getMessage(params.message, params.channel);
   const firstDoc = messageDocument?.docs?.[0];
