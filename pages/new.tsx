@@ -1,19 +1,18 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import { NextPage } from 'next';
 import { useState } from 'react';
 import {
   APIActionRowComponent,
   APIEmbed,
-  APIMessageComponent,
   RESTPostAPIWebhookWithTokenJSONBody,
 } from 'discord-api-types';
+import axios from 'axios';
+
+import { Header } from '../src/components/ui';
+import { Form } from '../src/components/Form';
 
 import styles from '../styles/New.module.css';
-
-import { Form } from '../src/components/Form';
-import axios from 'axios';
-import { Header } from '../src/components/Header';
+import clsx from 'clsx';
 
 const New: NextPage = () => {
   const [channelUrl, setChannelUrl] = useState('');
@@ -46,7 +45,7 @@ const New: NextPage = () => {
         <p> メッセージを投稿するDiscordチャンネルのURLを入力してください。</p>
         <p>
           <input
-            className={styles.channelURL}
+            className={clsx(styles.channelURL, 'generalInput')}
             onChange={(e) => setChannelUrl(e.target.value)}
             value={channelUrl ?? ''}
           />

@@ -1,0 +1,9 @@
+.root {
+  background-color: var(--discord-button-color);
+  color: var(--main-font-color);
+  animation-duration: 1s;
+}
+
+.root:hover {
+  background-color: var(--discord-button-color-hover);
+}

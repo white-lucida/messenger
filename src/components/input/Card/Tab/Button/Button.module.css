@@ -1,0 +1,14 @@
+.root {
+  border: none;
+  padding: 10px;
+  color: var(--main-font-color);
+  border-radius: 12px 12px 0 0;
+}
+
+.enabled {
+  background-color: var(--card-background-color);
+}
+
+.disabled {
+  background-color: var(--card-header-background-color);
+}

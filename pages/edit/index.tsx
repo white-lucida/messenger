@@ -1,7 +1,8 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Header } from '../../src/components/Header';
+
+import { Button, Header } from '../../src/components/ui';
 
 const Edit: NextPage = () => {
   const [url, setUrl] = useState('');
@@ -32,7 +33,7 @@ const Edit: NextPage = () => {
       </p>
 
       <input type='text' value={url ?? ''} onChange={(e) => setUrl(e.target.value)} />
-      <input type='button' value='JUMP' onClick={() => jump()} />
+      <Button label='JUMP' onClick={() => jump()} />
     </section>
   );
 };

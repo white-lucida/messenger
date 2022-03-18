@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
-import { useCallback } from 'react';
+
 import { Form } from '../../../src/components/Form';
-import { Header } from '../../../src/components/Header';
+import { Header } from '../../../src/components/ui';
+
 import { getAllMessages, getMessage, MessageDocument } from '../../../src/utils/firestore';
 
 type EditorProps = MessageDocument & { documentID: string };

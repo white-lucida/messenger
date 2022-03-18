@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { TabName } from '../components/EmbedInput';
+import type { TabName } from '../components/input/Embed/Form';
 
 const useInputTab = (tabNames: readonly TabName[], defaultTab: TabName) => {
   const [currentTabName, setCurrentTabName] = useState(defaultTab);
