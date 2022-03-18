@@ -8,9 +8,14 @@ type DiscordLikeButtonProps = {
   onClick: () => void;
 };
 
-const DiscordLikeButton: React.VFC<DiscordLikeButtonProps> = ({ label, className }) => {
+const DiscordLikeButton: React.VFC<DiscordLikeButtonProps> = ({ label, className, onClick }) => {
   return (
-    <input type='button' value={label} className={clsx(styles.root, className, 'generalInput')} />
+    <input
+      type='button'
+      value={label}
+      className={clsx(styles.root, className, 'generalInput')}
+      onClick={onClick}
+    />
   );
 };
 
