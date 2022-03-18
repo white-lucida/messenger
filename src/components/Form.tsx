@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 
 import { MessageInput } from './MessageInput';
@@ -15,6 +15,7 @@ import { ActionRowsDispatchContext } from '../hooks/use_actionrow';
 
 import styles from '../../styles/Form.module.css';
 import { Button, DiscordLikeButton } from './ui';
+import { useReloadAlert } from '../hooks/use_reloadalert';
 
 type FormProps = {
   onSubmit: (content: string, embeds: APIEmbed[], components: APIActionRowComponent[]) => void;
@@ -30,8 +31,14 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
 
+  const { forbidToReload, allowToReload } = useReloadAlert();
+  useEffect(() => {
+    forbidToReload();
+  }, [content, embeds, actionRows]);
+
   const handleSubmit = () => {
     onSubmit(content, embeds, actionRows);
+    allowToReload();
   };
 
   return (
