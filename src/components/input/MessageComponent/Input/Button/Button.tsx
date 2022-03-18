@@ -1,8 +1,9 @@
 import { APIButtonComponent } from 'discord-api-types';
 import { useActionRow } from '../../../../../hooks/use_actionrow';
 import { Card, Header, Body } from '../../../Card';
-import { Input, Label, Row } from '../../../Property';
+import { Input } from '../../../Property';
 import { Button as TabButton, Content, Panel } from '../../../Card/Tab';
+import { Button as UIButton } from '../../../../ui/Button';
 import { useCardTab } from '../../../../../hooks/use_cardtab';
 
 type ButtonProps = {
@@ -54,7 +55,15 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
             <></>
           </Content>
           <Content isEnabled={isCurrentTab('その他')}>
-            <></>
+            <UIButton
+              label='このボタンを削除する'
+              onClick={() =>
+                dispatch({
+                  type: 'removeComponent',
+                  payload: { rowIndex, componentIndex: buttonIndex },
+                })
+              }
+            />
           </Content>
         </Body>
       </Card>
