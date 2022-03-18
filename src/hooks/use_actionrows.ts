@@ -48,6 +48,19 @@ type ActionRowsActions =
         rowIndex: number;
         buttonIndex: number;
       };
+    }
+  | {
+      type: 'removeComponent';
+      payload: {
+        rowIndex: number;
+        componentIndex: number;
+      };
+    }
+  | {
+      type: 'removeRow';
+      payload: {
+        rowIndex: number;
+      };
     };
 
 /**
@@ -132,6 +145,17 @@ const reducer = (
       })();
 
       return setButton(state, next, rowIndex, buttonIndex);
+    case 'removeComponent':
+      return state.map((row, index) =>
+        index === action.payload.rowIndex
+          ? {
+              ...row,
+              components: row.components.filter((_, i) => i !== action.payload.componentIndex),
+            }
+          : row,
+      );
+    case 'removeRow':
+      return state.filter((_, index) => index !== action.payload.rowIndex);
   }
 };
 

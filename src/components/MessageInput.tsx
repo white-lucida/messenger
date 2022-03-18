@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import styles from '../../styles/MessageInput.module.css';
 
 type MessageInputProps = {
   children: React.ReactNode;
@@ -7,7 +6,7 @@ type MessageInputProps = {
 };
 
 const MessageInput: React.VFC<MessageInputProps> = ({ children, className }) => {
-  return <section className={clsx(className, styles.root)}>{children}</section>;
+  return <section className={clsx(className)}>{children}</section>;
 };
 
 export { MessageInput };

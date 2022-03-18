@@ -1,0 +1,30 @@
+.root {
+  height: 3em;
+  width: 6em;
+  background-color: white;
+  border: none;
+  border-radius: 1.5em;
+  position: relative;
+  display: flex;
+  padding: 0.25em;
+}
+
+.circle {
+  height: 2.5em;
+  width: 2.5em;
+  border-radius: 1.125em;
+  align-items: center;
+  position: absolute;
+  z-index: 3;
+  transition: all 0.5s;
+}
+
+.enabled {
+  background-color: rgb(146, 228, 127);
+  left: 0.25em;
+}
+
+.disabled {
+  background-color: gray;
+  transform: translateX(3em);
+}
