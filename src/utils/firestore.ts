@@ -74,13 +74,26 @@ const getAllMessages = async () => {
 
 const getMessage = async (messageID: string, channelID: string) => {
   const db = getFirestore();
-  const doc = await db
+  const query = await db
     .collection('messages')
     .where('messageID', '==', messageID)
     .where('channelID', '==', channelID)
     .withConverter(MessageDocumentConverter)
     .get();
-  return doc;
+
+  return query;
 };
 
-export { write, getAllMessages, getMessage };
+const editMessage = async (
+  documentID: string,
+  { content, embeds, actionRows }: Pick<MessageDocument, 'content' | 'embeds' | 'actionRows'>,
+) => {
+  const db = getFirestore();
+  await db
+    .collection('messages')
+    .doc(documentID)
+    .set({ content, embeds, actionRows }, { merge: true });
+};
+
+export { write, getAllMessages, getMessage, editMessage };
+export type { MessageDocument };
