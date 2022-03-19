@@ -114,6 +114,12 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
                 }
                 value={field.value}
               />
+              <Button
+                onClick={() =>
+                  dispatch({ type: 'removeField', payload: { embedIndex: index, fieldIndex: i } })
+                }
+                label='このフィールドを削除する'
+              />
             </Row>
           ))}
 

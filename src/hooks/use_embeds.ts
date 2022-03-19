@@ -86,6 +86,10 @@ type EmbedActions =
   | {
       type: 'setTimestamp';
       payload: BaseEmbedPayload & { timestamp: string };
+    }
+  | {
+      type: 'removeField';
+      payload: BaseEmbedPayload & BaseFieldPayload;
     };
 
 /**
@@ -287,11 +291,19 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     }
     case 'setTimestamp': {
       const embedIndex = action.payload.embedIndex;
-      console.log(action.payload.timestamp);
       return setEmbed(
         state,
         { ...state[embedIndex], timestamp: action.payload.timestamp },
         embedIndex,
+      );
+    }
+    case 'removeField': {
+      const embedIndex = action.payload.embedIndex;
+      const fieldIndex = action.payload.fieldIndex;
+      return state.map((embed, i) =>
+        i === embedIndex
+          ? { ...embed, fields: embed.fields?.filter((_, n) => n !== fieldIndex) }
+          : embed,
       );
     }
   }
