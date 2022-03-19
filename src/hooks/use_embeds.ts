@@ -1,4 +1,4 @@
-import { APIEmbed } from 'discord-api-types';
+import { APIEmbed, APIEmbedAuthor, APIEmbedFooter } from 'discord-api-types';
 import { useReducer } from 'react';
 
 interface BaseEmbedPayload {
@@ -16,12 +16,6 @@ type EmbedActions =
   | {
       type: 'newField';
       payload: BaseEmbedPayload;
-    }
-  | {
-      type: 'setAuthorName';
-      payload: BaseEmbedPayload & {
-        name: string;
-      };
     }
   | {
       type: 'setTitle';
@@ -56,6 +50,42 @@ type EmbedActions =
   | {
       type: 'changeColor';
       payload: BaseEmbedPayload & { color: string };
+    }
+  | {
+      type: 'setFooterText';
+      payload: BaseEmbedPayload & { text: string };
+    }
+  | {
+      type: 'setFooterIconURL';
+      payload: BaseEmbedPayload & { icon_url: string };
+    }
+  | {
+      type: 'setThumbnailURL';
+      payload: BaseEmbedPayload & { url: string };
+    }
+  | {
+      type: 'setAuthorName';
+      payload: BaseEmbedPayload & { name: string };
+    }
+  | {
+      type: 'setAuthorURL';
+      payload: BaseEmbedPayload & { url: string };
+    }
+  | {
+      type: 'setAuthorIconURL';
+      payload: BaseEmbedPayload & { icon_url: string };
+    }
+  | {
+      type: 'setImageURL';
+      payload: BaseEmbedPayload & { url: string };
+    }
+  | {
+      type: 'setURL';
+      payload: BaseEmbedPayload & { url: string };
+    }
+  | {
+      type: 'setTimestamp';
+      payload: BaseEmbedPayload & { timestamp: string };
     };
 
 /**
@@ -67,6 +97,12 @@ type EmbedActions =
  */
 const setEmbed = (state: APIEmbed[], content: APIEmbed, index: number) =>
   state.map((embed, i) => (i === index ? content : embed));
+
+const setAuthor = (state: APIEmbed[], author: Partial<APIEmbedAuthor>, index: number) =>
+  setEmbed(state, { ...state[index], author: { ...author, name: author.name ?? '' } }, index);
+
+const setFooter = (state: APIEmbed[], footer: Partial<APIEmbedFooter>, index: number) =>
+  setEmbed(state, { ...state[index], footer: { ...footer, text: footer?.text ?? '' } }, index);
 
 /**
  * `Embed`のState管理用Reducerの実装
@@ -98,20 +134,6 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
               value: '',
             },
           ],
-        },
-        embedIndex,
-      );
-    }
-    case 'setAuthorName': {
-      const embedIndex = action.payload.embedIndex;
-      return setEmbed(
-        state,
-        {
-          ...state[embedIndex],
-          author: {
-            ...state[embedIndex],
-            name: action.payload.name,
-          },
         },
         embedIndex,
       );
@@ -174,6 +196,101 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
           ...state[embedIndex],
           color: Number.parseInt(action.payload.color.substring(1), 16),
         },
+        embedIndex,
+      );
+    }
+    case 'setAuthorIconURL': {
+      const embedIndex = action.payload.embedIndex;
+      return setAuthor(
+        state,
+        {
+          ...state[embedIndex].author,
+          icon_url: action.payload.icon_url,
+        },
+        embedIndex,
+      );
+    }
+    case 'setAuthorName': {
+      const embedIndex = action.payload.embedIndex;
+      return setAuthor(
+        state,
+        { ...state[embedIndex].author, name: action.payload.name },
+        embedIndex,
+      );
+    }
+    case 'setAuthorURL': {
+      const embedIndex = action.payload.embedIndex;
+      return setAuthor(
+        state,
+        {
+          ...state[embedIndex].author,
+          url: action.payload.url,
+        },
+        embedIndex,
+      );
+    }
+    case 'setFooterText': {
+      const embedIndex = action.payload.embedIndex;
+      return setFooter(
+        state,
+        {
+          ...state[embedIndex].footer,
+          text: action.payload.text,
+        },
+        embedIndex,
+      );
+    }
+    case 'setFooterIconURL': {
+      const embedIndex = action.payload.embedIndex;
+      return setFooter(
+        state,
+        {
+          ...state[embedIndex].footer,
+          icon_url: action.payload.icon_url,
+        },
+        embedIndex,
+      );
+    }
+    case 'setThumbnailURL': {
+      const embedIndex = action.payload.embedIndex;
+      const embed = state[embedIndex];
+      return setEmbed(
+        state,
+        {
+          ...embed,
+          thumbnail: {
+            ...embed.thumbnail,
+            url: action.payload.url,
+          },
+        },
+        embedIndex,
+      );
+    }
+    case 'setImageURL': {
+      const embedIndex = action.payload.embedIndex;
+      const embed = state[embedIndex];
+      return setEmbed(
+        state,
+        {
+          ...embed,
+          image: {
+            ...embed.image,
+            url: action.payload.url,
+          },
+        },
+        embedIndex,
+      );
+    }
+    case 'setURL': {
+      const embedIndex = action.payload.embedIndex;
+      return setEmbed(state, { ...state[embedIndex], url: action.payload.url }, embedIndex);
+    }
+    case 'setTimestamp': {
+      const embedIndex = action.payload.embedIndex;
+      console.log(action.payload.timestamp);
+      return setEmbed(
+        state,
+        { ...state[embedIndex], timestamp: action.payload.timestamp },
         embedIndex,
       );
     }

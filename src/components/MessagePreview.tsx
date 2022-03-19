@@ -38,15 +38,17 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
           <div slot='embeds'>
             {embeds.map((embed, i) => (
               <DiscordEmbed
-                // authorImage=
+                authorImage={embed.author?.icon_url}
+                authorName={embed.author?.name}
+                authorURL={embed.author?.url}
                 borderColor={embed.color !== undefined ? `#${embed.color.toString(16)}` : undefined}
-                embedTitle={embed.title ?? ''}
+                embedTitle={embed.title}
+                footerImage={embed.footer?.icon_url}
+                image={embed.image?.url}
+                thumbnail={embed.thumbnail?.url}
+                timestamp={embed.timestamp}
+                url={embed.url}
                 slot='embeds'
-                // footerImage="https://i.imgur.com/wSTFkRM.png"
-                // image="https://i.imgur.com/wSTFkRM.png"
-                // thumbnail="https://i.imgur.com/wSTFkRM.png"
-                // timestamp="01/01/2018"
-                // url="https://discord.js.org/"
                 key={i}
               >
                 {split(embed.description ?? '')}
@@ -59,6 +61,7 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
                     </DiscordEmbedField>
                   )) ?? []}
                 </DiscordEmbedFields>
+                <span slot='footer'>{embed.footer?.text}</span>
               </DiscordEmbed>
             ))}
           </div>
