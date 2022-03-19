@@ -4,8 +4,11 @@ import {
   APIActionRowComponent,
   APIEmbed,
   RESTPostAPIChannelMessageResult,
+  RESTGetAPIOAuth2CurrentAuthorizationResult,
 } from 'discord-api-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
+import { isAdminUser, isAdminUserOauth2 } from '../../src/utils/check_admin_user';
 import { write } from '../../src/utils/firestore';
 
 type SendResponse = {
@@ -40,26 +43,23 @@ const post = async (
     actionRows: data.components,
   });
   return res.data.id;
-  /*
-  try {
-    await axios.post(`/api/revalidate?secret=${process.env.NEXTJS_SECRET}`, {
-      messageID: res.data.id,
-      channelID: data.channelID,
-    });
-  } catch (e) {
-    console.log(e);
-  }
-  */
 };
 
 // 上記関数は外部から注入したい（DI）
-export default function handler(req: NextApiRequest, res: NextApiResponse<SendResponse>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<SendResponse>) {
+  const session = await getSession({ req });
+
+  if (!isAdminUserOauth2(session)) {
+    res.status(400).end();
+    return;
+  }
+
   const body = req.body;
 
   const url = body.url;
   if (typeof url !== 'string') {
-    res.status(400);
-    throw new Error();
+    res.status(400).end();
+    return;
   }
   /** 型ガードを追加したい */
   const content: string = body.content;
@@ -71,21 +71,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<SendRe
 
   if (token === undefined) throw new Error();
 
-  post(
-    getMessagePostEndPoint(channelID),
-    {
-      channelID,
-      content,
-      embeds,
-      components: actionRows,
-    },
-    { headers: { 'Content-Type': 'application/json', Authorization: `Bot ${token}` } },
-  )
-    .then((value) => {
-      // TODO: valueを返却
-      res.status(200).end();
-    })
-    .catch((e) => {
-      res.status(400).end();
-    });
+  try {
+    await post(
+      getMessagePostEndPoint(channelID),
+      {
+        channelID,
+        content,
+        embeds,
+        components: actionRows,
+      },
+      { headers: { 'Content-Type': 'application/json', Authorization: `Bot ${token}` } },
+    );
+    res.status(200).end();
+  } catch (e) {
+    res.status(400).end();
+  }
 }
