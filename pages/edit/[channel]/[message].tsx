@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
+import Head from 'next/head';
 
 import { Form } from '../../../src/components/Form';
 import { Header } from '../../../src/components/ui';
@@ -78,6 +79,9 @@ const Editor: NextPage<EditorProps> = ({
 
   return (
     <section>
+      <Head>
+        <title>編集画面</title>
+      </Head>
       <Header />
       <Form defaultValue={{ content, embeds, actionRows }} onSubmit={onSubmit} />
     </section>
