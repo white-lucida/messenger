@@ -2,8 +2,18 @@ import {
   APIActionRowComponent,
   APIButtonComponent,
   APISelectMenuComponent,
+  ButtonStyle,
 } from 'discord-api-types/payloads/v9';
 import { useReducer } from 'react';
+import { isButton, isButtonWithCustomID, isButtonWithURL } from '../utils/components_type';
+
+interface BaseRowAction {
+  rowIndex: number;
+}
+
+interface BaseComponentAction extends BaseRowAction {
+  componentIndex: number;
+}
 
 type ActionRowsActions =
   | {
@@ -11,56 +21,39 @@ type ActionRowsActions =
     }
   | {
       type: 'newButton';
-      payload: {
-        index: number;
-      };
+      payload: BaseRowAction;
     }
   | {
       type: 'newSelectMenu';
-      payload: {
-        index: number;
-      };
+      payload: BaseRowAction;
     }
   | {
       type: 'setButtonLabel';
-      payload: {
-        rowIndex: number;
-        buttonIndex: number;
-        label: string;
-      };
+      payload: BaseComponentAction & { label: string };
     }
-  /*
   | {
       type: 'setButtonURL';
-      payload: {
-        rowIndex: number;
-        buttonIndex: number;
-        url: string;
-      };
+      payload: BaseComponentAction & { url: string };
     }
-    */
-  /* 
-    urlを設定する場合型の制御が難しいため現時点では実装を見送ります
-   */
+  | {
+      type: 'setButtonCustomID';
+      payload: BaseComponentAction & { custom_id: string };
+    }
   | {
       type: 'toggleButtonDisabled';
-      payload: {
-        rowIndex: number;
-        buttonIndex: number;
-      };
+      payload: BaseComponentAction;
     }
   | {
       type: 'removeComponent';
-      payload: {
-        rowIndex: number;
-        componentIndex: number;
-      };
+      payload: BaseComponentAction;
     }
   | {
       type: 'removeRow';
-      payload: {
-        rowIndex: number;
-      };
+      payload: BaseRowAction;
+    }
+  | {
+      type: 'setButtonStyle';
+      payload: BaseComponentAction & { style: ButtonStyle };
     };
 
 /**
@@ -103,6 +96,9 @@ const setButton = (
   );
 };
 
+const getComponent = (state: APIActionRowComponent[], rowIndex: number, index: number) =>
+  state[rowIndex].components[index];
+
 /**
  * `ActionRow`のState管理用Reducerの実装です。
  * @param  {APIActionRowComponent[]} state - 現在のState
@@ -120,16 +116,15 @@ const reducer = (
       return addComponent(
         state,
         { type: 2, label: '', custom_id: Date.now().toString(), style: 1 }, // 暫定の実装, customIDとURLの設定を実装したら変更する
-        action.payload.index,
+        action.payload.rowIndex,
       );
     case 'newSelectMenu':
-      return addComponent(state, { type: 3, custom_id: '' }, action.payload.index);
+      return addComponent(state, { type: 3, custom_id: '' }, action.payload.rowIndex);
     case 'setButtonLabel':
-    case 'toggleButtonDisabled':
-      const rowIndex = action.payload.rowIndex;
-      const buttonIndex = action.payload.buttonIndex;
-      const prev = state[rowIndex].components[buttonIndex];
-      if (prev.type !== 2) return state;
+    case 'toggleButtonDisabled': {
+      const { rowIndex, componentIndex } = action.payload;
+      const prev = getComponent(state, rowIndex, componentIndex);
+      if (!isButton(prev)) return state;
 
       /**
        * 無理やりすぎる
@@ -144,7 +139,8 @@ const reducer = (
         }
       })();
 
-      return setButton(state, next, rowIndex, buttonIndex);
+      return setButton(state, next, rowIndex, componentIndex);
+    }
     case 'removeComponent':
       return state.map((row, index) =>
         index === action.payload.rowIndex
@@ -156,6 +152,38 @@ const reducer = (
       );
     case 'removeRow':
       return state.filter((_, index) => index !== action.payload.rowIndex);
+
+    case 'setButtonCustomID':
+    case 'setButtonURL': {
+      const { rowIndex, componentIndex } = action.payload;
+      const button = getComponent(state, rowIndex, componentIndex);
+
+      if (!isButton(button)) return state;
+      if (isButtonWithCustomID(button) && action.type === 'setButtonCustomID') {
+        return setButton(
+          state,
+          { ...button, custom_id: action.payload.custom_id },
+          rowIndex,
+          componentIndex,
+        );
+      }
+      if (isButtonWithURL(button) && action.type === 'setButtonURL') {
+        return setButton(state, { ...button, url: action.payload.url }, rowIndex, componentIndex);
+      }
+      return state;
+    }
+    case 'setButtonStyle': {
+      const { rowIndex, componentIndex, style } = action.payload;
+
+      const button = getComponent(state, rowIndex, componentIndex);
+      if (!isButton(button)) return state;
+      if (style === 5) return state; // styleがButtonStyle.Link の場合
+
+      if (isButtonWithCustomID(button) || isButtonWithCustomID(button))
+        // 型エラー対策
+        return setButton(state, { ...button, style }, rowIndex, componentIndex);
+      return state;
+    }
   }
 };
 

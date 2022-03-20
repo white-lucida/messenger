@@ -34,7 +34,7 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ actionRow, rowIn
     <ActionRow index={rowIndex}>
       <div className={styles.children}>{componentInputs}</div>
       <NewComponentButton
-        onClick={() => dispatch({ type: 'newButton', payload: { index: rowIndex } })}
+        onClick={() => dispatch({ type: 'newButton', payload: { rowIndex } })}
         label='ボタンを追加する'
       />
     </ActionRow>

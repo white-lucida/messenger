@@ -10,6 +10,8 @@ import {
 } from '@discord-message-components/react';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import '@discord-message-components/react/styles';
+import { getButtonStyleName } from '../utils/button_style_type';
+import { isButtonWithURL } from '../utils/components_type';
 
 type MessagePreviewProps = {
   children: string;
@@ -55,9 +57,7 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
                 <DiscordEmbedFields slot='fields'>
                   {embed.fields?.map((field, i) => (
                     <DiscordEmbedField fieldTitle={field.name ?? ''} inline={false} key={i}>
-                      {field.value
-                        ?.split(/(\n)/g)
-                        .map((t, i) => (t === '\n' ? <br key={i} /> : t)) ?? ''}
+                      {split(field.value)}
                     </DiscordEmbedField>
                   )) ?? []}
                 </DiscordEmbedFields>
@@ -71,7 +71,12 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
                 switch (component.type) {
                   case 2:
                     return (
-                      <DiscordButton key={x} disabled={component.disabled ?? false}>
+                      <DiscordButton
+                        key={x}
+                        disabled={component.disabled ?? false}
+                        type={getButtonStyleName(component.style)}
+                        url={isButtonWithURL(component) ? component.url : undefined}
+                      >
                         {component.label ?? ''}
                       </DiscordButton>
                     );

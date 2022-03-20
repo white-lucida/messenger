@@ -16,6 +16,7 @@ const Datetime: React.VFC<DatetimeProps> = ({ onChange, date }) => {
       timeInputLabel='Time:'
       dateFormat='MM/dd/yyyy h:mm aa'
       locale='ja'
+      isClearable
       showTimeInput
     />
   );

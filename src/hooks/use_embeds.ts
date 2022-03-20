@@ -5,7 +5,7 @@ interface BaseEmbedPayload {
   embedIndex: number;
 }
 
-interface BaseFieldPayload {
+interface BaseFieldPayload extends BaseEmbedPayload {
   fieldIndex: number;
 }
 
@@ -31,17 +31,15 @@ type EmbedActions =
     }
   | {
       type: 'setFieldName';
-      payload: BaseEmbedPayload &
-        BaseFieldPayload & {
-          name: string;
-        };
+      payload: BaseFieldPayload & {
+        name: string;
+      };
     }
   | {
       type: 'setFieldValue';
-      payload: BaseEmbedPayload &
-        BaseFieldPayload & {
-          value: string;
-        };
+      payload: BaseFieldPayload & {
+        value: string;
+      };
     }
   | {
       type: 'removeEmbed';
@@ -89,7 +87,7 @@ type EmbedActions =
     }
   | {
       type: 'removeField';
-      payload: BaseEmbedPayload & BaseFieldPayload;
+      payload: BaseFieldPayload;
     };
 
 /**
@@ -143,31 +141,30 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
       );
     }
     case 'setTitle': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, title } = action.payload;
       return setEmbed(
         state,
         {
           ...state[embedIndex],
-          title: action.payload.title,
+          title,
         },
         embedIndex,
       );
     }
     case 'setDescription': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, description } = action.payload;
       return setEmbed(
         state,
         {
           ...state[embedIndex],
-          description: action.payload.description,
+          description,
         },
         embedIndex,
       );
     }
     case 'setFieldName':
     case 'setFieldValue': {
-      const embedIndex = action.payload.embedIndex;
-      const fieldIndex = action.payload.fieldIndex;
+      const { embedIndex, fieldIndex } = action.payload;
       const embed = state[embedIndex];
       const data =
         action.type === 'setFieldName'
@@ -193,70 +190,66 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
       return state.filter((_, index) => index !== action.payload.embedIndex);
     }
     case 'changeColor': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, color } = action.payload;
       return setEmbed(
         state,
         {
           ...state[embedIndex],
-          color: Number.parseInt(action.payload.color.substring(1), 16),
+          color: Number.parseInt(color.substring(1), 16),
         },
         embedIndex,
       );
     }
     case 'setAuthorIconURL': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, icon_url } = action.payload;
       return setAuthor(
         state,
         {
           ...state[embedIndex].author,
-          icon_url: action.payload.icon_url,
+          icon_url,
         },
         embedIndex,
       );
     }
     case 'setAuthorName': {
-      const embedIndex = action.payload.embedIndex;
-      return setAuthor(
-        state,
-        { ...state[embedIndex].author, name: action.payload.name },
-        embedIndex,
-      );
+      const { embedIndex, name } = action.payload;
+      return setAuthor(state, { ...state[embedIndex].author, name }, embedIndex);
     }
     case 'setAuthorURL': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, url } = action.payload;
       return setAuthor(
         state,
         {
           ...state[embedIndex].author,
-          url: action.payload.url,
+          url,
         },
         embedIndex,
       );
     }
     case 'setFooterText': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, text } = action.payload;
       return setFooter(
         state,
         {
           ...state[embedIndex].footer,
-          text: action.payload.text,
+          text,
         },
         embedIndex,
       );
     }
     case 'setFooterIconURL': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, icon_url } = action.payload;
       return setFooter(
         state,
         {
           ...state[embedIndex].footer,
-          icon_url: action.payload.icon_url,
+          icon_url,
         },
         embedIndex,
       );
     }
     case 'setThumbnailURL': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, url } = action.payload;
       const embed = state[embedIndex];
       return setEmbed(
         state,
@@ -264,14 +257,14 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
           ...embed,
           thumbnail: {
             ...embed.thumbnail,
-            url: action.payload.url,
+            url,
           },
         },
         embedIndex,
       );
     }
     case 'setImageURL': {
-      const embedIndex = action.payload.embedIndex;
+      const { embedIndex, url } = action.payload;
       const embed = state[embedIndex];
       return setEmbed(
         state,
@@ -279,27 +272,22 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
           ...embed,
           image: {
             ...embed.image,
-            url: action.payload.url,
+            url,
           },
         },
         embedIndex,
       );
     }
     case 'setURL': {
-      const embedIndex = action.payload.embedIndex;
-      return setEmbed(state, { ...state[embedIndex], url: action.payload.url }, embedIndex);
+      const { embedIndex, url } = action.payload;
+      return setEmbed(state, { ...state[embedIndex], url }, embedIndex);
     }
     case 'setTimestamp': {
-      const embedIndex = action.payload.embedIndex;
-      return setEmbed(
-        state,
-        { ...state[embedIndex], timestamp: action.payload.timestamp },
-        embedIndex,
-      );
+      const { embedIndex, timestamp } = action.payload;
+      return setEmbed(state, { ...state[embedIndex], timestamp }, embedIndex);
     }
     case 'removeField': {
-      const embedIndex = action.payload.embedIndex;
-      const fieldIndex = action.payload.fieldIndex;
+      const { embedIndex, fieldIndex } = action.payload;
       return state.map((embed, i) =>
         i === embedIndex
           ? { ...embed, fields: embed.fields?.filter((_, n) => n !== fieldIndex) }

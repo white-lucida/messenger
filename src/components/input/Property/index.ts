@@ -4,3 +4,4 @@ export * from './TextArea';
 export * from './Row';
 export * from './Toggle';
 export * from './Datetime';
+export * from './Select';
