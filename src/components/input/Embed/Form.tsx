@@ -2,7 +2,7 @@ import React from 'react';
 import { APIEmbed } from 'discord-api-types';
 import { CirclePicker } from 'react-color';
 
-import { Label, Input, TextArea, Row, Datetime } from '../Property';
+import { Label, Input, TextArea, Row, Datetime, Verifier } from '../Property';
 import { Card, Body as CardBody, Header as CardHeader } from '../Card';
 import { Button as TabButton, Panel as TabPanel, Content } from '../Card/Tab';
 
@@ -55,65 +55,93 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
         <Content isEnabled={isCurrentTab('基本情報')}>
           <Row>
             <Label> タイトル</Label>
-            <Input
-              onChange={(value) =>
-                dispatch({
-                  type: 'setTitle',
-                  payload: {
-                    embedIndex: index,
-                    title: value,
-                  },
-                })
-              }
-              value={embed.title}
-            />
+            <Verifier
+              errorCondition={(embed.title?.length ?? 0) > 256}
+              alert='タイトルを256文字より短くしてください'
+            >
+              <Input
+                onChange={(value) =>
+                  dispatch({
+                    type: 'setTitle',
+                    payload: {
+                      embedIndex: index,
+                      title: value,
+                    },
+                  })
+                }
+                value={embed.title}
+              />
+            </Verifier>
           </Row>
           <Row>
             <Label>説明</Label>
-            <TextArea
-              onChange={(value) =>
-                dispatch({
-                  type: 'setDescription',
-                  payload: {
-                    embedIndex: index,
-                    description: value,
-                  },
-                })
-              }
-              value={embed.description}
-            />
+            <Verifier
+              errorCondition={(embed.description?.length ?? 0) > 4096}
+              alert='説明を4096文字より短くしてください'
+            >
+              <TextArea
+                onChange={(value) =>
+                  dispatch({
+                    type: 'setDescription',
+                    payload: {
+                      embedIndex: index,
+                      description: value,
+                    },
+                  })
+                }
+                value={embed.description}
+              />
+            </Verifier>
           </Row>
         </Content>
         <Content isEnabled={isCurrentTab('フィールド')}>
           {embed.fields?.map((field, i) => (
             <Row key={i}>
               <Label>{i + 1}</Label>
-              <Input
-                onChange={(value) =>
-                  dispatch({
-                    type: 'setFieldName',
-                    payload: {
-                      embedIndex: index,
-                      fieldIndex: i,
-                      name: value,
-                    },
-                  })
-                }
-                value={field.name}
-              />
-              <TextArea
-                onChange={(value) =>
-                  dispatch({
-                    type: 'setFieldValue',
-                    payload: {
-                      embedIndex: index,
-                      fieldIndex: i,
-                      value: value,
-                    },
-                  })
-                }
-                value={field.value}
-              />
+
+              <Verifier errorCondition={field.name === ''} alert='フィールド名を入力してください'>
+                <Verifier
+                  errorCondition={(field.name?.length ?? 0) > 256}
+                  alert='フィールド名を256文字より短くしてください'
+                >
+                  <Input
+                    onChange={(value) =>
+                      dispatch({
+                        type: 'setFieldName',
+                        payload: {
+                          embedIndex: index,
+                          fieldIndex: i,
+                          name: value,
+                        },
+                      })
+                    }
+                    value={field.name}
+                  />
+                </Verifier>
+              </Verifier>
+              <Verifier
+                errorCondition={field.value === ''}
+                alert='フィールドの値を入力してください'
+              >
+                <Verifier
+                  errorCondition={(field.value?.length ?? 0) > 1024}
+                  alert='フィールドの値を1024文字より短くしてください'
+                >
+                  <TextArea
+                    onChange={(value) =>
+                      dispatch({
+                        type: 'setFieldValue',
+                        payload: {
+                          embedIndex: index,
+                          fieldIndex: i,
+                          value: value,
+                        },
+                      })
+                    }
+                    value={field.value}
+                  />
+                </Verifier>
+              </Verifier>
               <Button
                 onClick={() =>
                   dispatch({ type: 'removeField', payload: { embedIndex: index, fieldIndex: i } })
@@ -165,18 +193,23 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
         <Content isEnabled={isCurrentTab('フッター')}>
           <Row>
             <Label> テキスト </Label>
-            <Input
-              onChange={(value) =>
-                dispatch({
-                  type: 'setFooterText',
-                  payload: {
-                    embedIndex: index,
-                    text: value,
-                  },
-                })
-              }
-              value={embed.footer?.text ?? ''}
-            />
+            <Verifier
+              errorCondition={(embed.footer?.text.length ?? 0) > 2048}
+              alert='フッターのテキストは2048文字より短くしてください'
+            >
+              <Input
+                onChange={(value) =>
+                  dispatch({
+                    type: 'setFooterText',
+                    payload: {
+                      embedIndex: index,
+                      text: value,
+                    },
+                  })
+                }
+                value={embed.footer?.text ?? ''}
+              />
+            </Verifier>
           </Row>
           <Row>
             <Label> アイコンURL </Label>
@@ -197,18 +230,23 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
         <Content isEnabled={isCurrentTab('著者欄')}>
           <Row>
             <Label>著者名</Label>
-            <Input
-              onChange={(value) =>
-                dispatch({
-                  type: 'setAuthorName',
-                  payload: {
-                    embedIndex: index,
-                    name: value,
-                  },
-                })
-              }
-              value={embed.author?.name ?? ''}
-            />
+            <Verifier
+              errorCondition={(embed.author?.name.length ?? 0) > 256}
+              alert='著者名は256文字より短くしてください'
+            >
+              <Input
+                onChange={(value) =>
+                  dispatch({
+                    type: 'setAuthorName',
+                    payload: {
+                      embedIndex: index,
+                      name: value,
+                    },
+                  })
+                }
+                value={embed.author?.name ?? ''}
+              />
+            </Verifier>
           </Row>
           <Row>
             <Label>著者アイコンURL</Label>

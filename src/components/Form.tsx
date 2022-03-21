@@ -12,6 +12,7 @@ import { useEmbeds } from '../hooks/use_embeds';
 import { EmbedsDispatchContext } from '../hooks/use_embed';
 import { useActionRows } from '../hooks/use_actionrows';
 import { ActionRowsDispatchContext } from '../hooks/use_actionrow';
+import { SetErrorContext } from '../hooks/use_error';
 
 import styles from '../../styles/Form.module.css';
 import { Button, DiscordLikeButton } from './ui';
@@ -30,6 +31,7 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   const [content, setContent] = useState(defaultValue?.content ?? '');
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
+  const [isError, setIsError] = useState(false);
 
   const { forbidToReload, allowToReload } = useReloadAlert();
   useEffect(() => {
@@ -37,6 +39,7 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   }, [content, embeds, actionRows]);
 
   const handleSubmit = () => {
+    if (isError) return;
     onSubmit(content, embeds, actionRows);
     allowToReload();
   };
@@ -44,34 +47,39 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   return (
     <form onSubmit={handleSubmit} className={styles.root}>
       <div className={styles.main}>
-        <MessageInput className={styles.input}>
-          <h3> 内容 </h3>
-          <TextArea onChange={(value) => setContent(value)} value={content} />
-          <h3> 埋め込み </h3>
-          <EmbedsDispatchContext.Provider value={embedsDispatch}>
-            <div className={styles.embeds}>
-              {useMemo(
-                () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
-                [embeds],
-              )}
-            </div>
-          </EmbedsDispatchContext.Provider>
-          <Button onClick={() => embedsDispatch({ type: 'newEmbed' })} label='埋め込みを追加する' />
+        <SetErrorContext.Provider value={setIsError}>
+          <MessageInput className={styles.input}>
+            <h3> 内容 </h3>
+            <TextArea onChange={(value) => setContent(value)} value={content} />
+            <h3> 埋め込み </h3>
+            <EmbedsDispatchContext.Provider value={embedsDispatch}>
+              <div className={styles.embeds}>
+                {useMemo(
+                  () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
+                  [embeds],
+                )}
+              </div>
+            </EmbedsDispatchContext.Provider>
+            <Button
+              onClick={() => embedsDispatch({ type: 'newEmbed' })}
+              label='埋め込みを追加する'
+            />
 
-          <h3> Message Component </h3>
-          <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
-            <div className={styles.actionRows}>
-              {useMemo(
-                () =>
-                  actionRows.map((row, rowIndex) => (
-                    <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
-                  )),
-                [actionRows],
-              )}
-            </div>
-            <NewRowButton />
-          </ActionRowsDispatchContext.Provider>
-        </MessageInput>
+            <h3> Message Component </h3>
+            <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
+              <div className={styles.actionRows}>
+                {useMemo(
+                  () =>
+                    actionRows.map((row, rowIndex) => (
+                      <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
+                    )),
+                  [actionRows],
+                )}
+              </div>
+              <NewRowButton />
+            </ActionRowsDispatchContext.Provider>
+          </MessageInput>
+        </SetErrorContext.Provider>
         <MessagePreview embeds={embeds} actionRows={actionRows} className={styles.preview}>
           {content}
         </MessagePreview>
