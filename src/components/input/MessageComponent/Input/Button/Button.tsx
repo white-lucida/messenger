@@ -94,7 +94,7 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
                 onChange={(value) =>
                   dispatch({
                     type: 'setButtonCustomID',
-                    payload: { rowIndex, componentIndex: rowIndex, custom_id: value },
+                    payload: { rowIndex, componentIndex: buttonIndex, custom_id: value },
                   })
                 }
                 value={button.custom_id}
@@ -108,7 +108,7 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
                 onChange={(value) =>
                   dispatch({
                     type: 'setButtonURL',
-                    payload: { rowIndex, componentIndex: rowIndex, url: value },
+                    payload: { rowIndex, componentIndex: buttonIndex, url: value },
                   })
                 }
                 value={button.url}
