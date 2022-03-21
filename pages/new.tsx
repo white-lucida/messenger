@@ -50,7 +50,7 @@ const New: NextPage = () => {
           />
         </p>
       </main>
-      <Form onSubmit={onSubmit}></Form>
+      <Form onSubmit={onSubmit} className={styles.form}></Form>
     </section>
   );
 };

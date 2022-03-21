@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
+import clsx from 'clsx';
 
 import { MessageInput } from './MessageInput';
 import { Form as EmbedForm } from './input/Embed/Form';
@@ -7,16 +8,16 @@ import { Form as ActionRowForm } from './input/MessageComponent/Form';
 import { MessagePreview } from './MessagePreview';
 import { NewRowButton } from './input/MessageComponent/NewRowButton';
 import { TextArea } from './input/Property';
+import { Button, DiscordLikeButton } from './ui';
 
 import { useEmbeds } from '../hooks/use_embeds';
 import { EmbedsDispatchContext } from '../hooks/use_embed';
 import { useActionRows } from '../hooks/use_actionrows';
 import { ActionRowsDispatchContext } from '../hooks/use_actionrow';
 import { SetErrorContext } from '../hooks/use_error';
+import { useReloadAlert } from '../hooks/use_reloadalert';
 
 import styles from '../../styles/Form.module.css';
-import { Button, DiscordLikeButton } from './ui';
-import { useReloadAlert } from '../hooks/use_reloadalert';
 
 type FormProps = {
   onSubmit: (content: string, embeds: APIEmbed[], components: APIActionRowComponent[]) => void;
@@ -25,9 +26,10 @@ type FormProps = {
     embeds: APIEmbed[];
     actionRows: APIActionRowComponent[];
   };
+  className?: string;
 };
 
-const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
+const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue, className }) => {
   const [content, setContent] = useState(defaultValue?.content ?? '');
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
@@ -45,7 +47,7 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.root}>
+    <form onSubmit={handleSubmit} className={clsx(styles.root, className)}>
       <div className={styles.main}>
         <SetErrorContext.Provider value={setIsError}>
           <MessageInput className={styles.input}>
