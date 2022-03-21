@@ -71,6 +71,22 @@ const Button: React.VFC<ButtonProps> = ({ button, rowIndex, buttonIndex }) => {
           />
         </Content>
         <Content isEnabled={isCurrentTab('付加情報')}>
+          <Row>
+            <Label> リンクボタンを使用する </Label>
+            <Toggle
+              onClick={() =>
+                dispatch({
+                  type: 'changeButtonType',
+                  payload: {
+                    rowIndex,
+                    componentIndex: buttonIndex,
+                    type: isButtonWithCustomID(button) ? 'url' : 'custom_id',
+                  },
+                })
+              }
+              isEnabled={isButtonWithURL(button)}
+            />
+          </Row>
           {isButtonWithCustomID(button) && (
             <Row>
               <Label>ID</Label>

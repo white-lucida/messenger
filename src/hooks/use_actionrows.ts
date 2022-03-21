@@ -1,6 +1,8 @@
 import {
   APIActionRowComponent,
   APIButtonComponent,
+  APIButtonComponentWithCustomId,
+  APIButtonComponentWithURL,
   APISelectMenuComponent,
   ButtonStyle,
 } from 'discord-api-types/payloads/v9';
@@ -55,6 +57,12 @@ type ActionRowsActions =
   | {
       type: 'setButtonStyle';
       payload: BaseComponentAction & { style: ButtonStyle };
+    }
+  | {
+      type: 'changeButtonType';
+      payload: BaseComponentAction & {
+        type: 'custom_id' | 'url';
+      };
     };
 
 /**
@@ -124,11 +132,7 @@ const reducer = (
   if (!('componentIndex' in action.payload)) {
     switch (action.type) {
       case 'newButton':
-        return addComponent(
-          state,
-          { type: 2, label: '', custom_id: Date.now().toString(), style: 1 }, // 暫定の実装, customIDとURLの設定を実装したら変更する
-          rowIndex,
-        );
+        return addComponent(state, { type: 2, label: '', custom_id: '', style: 1 }, rowIndex);
       case 'newSelectMenu':
         return addComponent(state, { type: 3, custom_id: '' }, rowIndex);
       case 'removeRow':
@@ -171,6 +175,30 @@ const reducer = (
         const { style } = action.payload;
         if (style === 5) return state; // styleがButtonStyle.Link の場合
         if (isButtonWithCustomID(component)) return setter({ ...component, style });
+        return state;
+      }
+      case 'changeButtonType': {
+        const { type } = action.payload;
+        if (type === 'custom_id') {
+          if (isButtonWithURL(component)) {
+            const {
+              url: {},
+              ...buttonWithOutURL
+            } = component; // componentからcustom_idを除いたオブジェクト
+            const styled = { ...buttonWithOutURL, style: 1 };
+            return setter({ ...styled, custom_id: '' });
+          }
+          return state;
+        } else if (type === 'url') {
+          if (isButtonWithCustomID(component)) {
+            const {
+              custom_id: {},
+              ...buttonWithOutCustomID
+            } = component; // componentからcustom_idを除いたオブジェクト
+            const styled = { ...buttonWithOutCustomID, style: 5 };
+            return setter({ ...styled, url: '' });
+          }
+        }
       }
       default:
         return state;
