@@ -37,6 +37,8 @@ a {
   --discord-button-color: rgb(130, 130, 219);
   --discord-button-color-hover: rgb(82, 82, 143);
   --button-color: #222;
+  --button-color-hover: #333;
+  --button-color-click: #666;
   --input-color: var(--main-background-color);
   --input-border-color: rgba(255, 255, 255, 0.5);
   --card-background-color: #4c5359;

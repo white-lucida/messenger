@@ -10,6 +10,8 @@ import {
 } from '@discord-message-components/react';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
 import '@discord-message-components/react/styles';
+import { getButtonStyleName } from '../utils/button_style_type';
+import { isButtonWithURL } from '../utils/components_type';
 
 type MessagePreviewProps = {
   children: string;
@@ -38,27 +40,28 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
           <div slot='embeds'>
             {embeds.map((embed, i) => (
               <DiscordEmbed
-                // authorImage=
+                authorImage={embed.author?.icon_url}
+                authorName={embed.author?.name}
+                authorURL={embed.author?.url}
                 borderColor={embed.color !== undefined ? `#${embed.color.toString(16)}` : undefined}
-                embedTitle={embed.title ?? ''}
+                embedTitle={embed.title}
+                footerImage={embed.footer?.icon_url}
+                image={embed.image?.url}
+                thumbnail={embed.thumbnail?.url}
+                timestamp={embed.timestamp}
+                url={embed.url}
                 slot='embeds'
-                // footerImage="https://i.imgur.com/wSTFkRM.png"
-                // image="https://i.imgur.com/wSTFkRM.png"
-                // thumbnail="https://i.imgur.com/wSTFkRM.png"
-                // timestamp="01/01/2018"
-                // url="https://discord.js.org/"
                 key={i}
               >
                 {split(embed.description ?? '')}
                 <DiscordEmbedFields slot='fields'>
                   {embed.fields?.map((field, i) => (
                     <DiscordEmbedField fieldTitle={field.name ?? ''} inline={false} key={i}>
-                      {field.value
-                        ?.split(/(\n)/g)
-                        .map((t, i) => (t === '\n' ? <br key={i} /> : t)) ?? ''}
+                      {split(field.value)}
                     </DiscordEmbedField>
                   )) ?? []}
                 </DiscordEmbedFields>
+                <span slot='footer'>{embed.footer?.text}</span>
               </DiscordEmbed>
             ))}
           </div>
@@ -68,7 +71,12 @@ const MessagePreview: React.VFC<MessagePreviewProps> = ({
                 switch (component.type) {
                   case 2:
                     return (
-                      <DiscordButton key={x} disabled={component.disabled ?? false}>
+                      <DiscordButton
+                        key={x}
+                        disabled={component.disabled ?? false}
+                        type={getButtonStyleName(component.style)}
+                        url={isButtonWithURL(component) ? component.url : undefined}
+                      >
                         {component.label ?? ''}
                       </DiscordButton>
                     );

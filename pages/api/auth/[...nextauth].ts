@@ -1,5 +1,7 @@
+import axios from 'axios';
 import NextAuth from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
+import { isAdminUser } from '../../../src/utils/check_admin_user';
 
 export default NextAuth({
   providers: [
@@ -11,9 +13,18 @@ export default NextAuth({
   ],
   callbacks: {
     async signIn({ account }) {
-      const ids = process.env.DISCORD_ADMIN_IDS?.split(`,`);
-      if (ids === undefined) return true;
-      return ids.includes(account.providerAccountId);
+      return isAdminUser(account.providerAccountId);
+    },
+    async jwt({ token, account }) {
+      // Persist the OAuth access_token to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.accessToken = token.accessToken;
+      return session;
     },
   },
 });

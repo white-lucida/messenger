@@ -1,8 +1,12 @@
+import clsx from 'clsx';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 import { Button, Header } from '../../src/components/ui';
+
+import styles from '../../styles/Edit.module.css';
 
 const Edit: NextPage = () => {
   const [url, setUrl] = useState('');
@@ -24,16 +28,23 @@ const Edit: NextPage = () => {
   };
   return (
     <section>
+      <Head>
+        <title>編集画面ポータル</title>
+      </Head>
       <Header />
-      <h1>編集画面ポータル</h1>
 
-      <p>
-        編集可能なメッセージのリストを生成するのはコストがかさむので、
-        メッセージリンクから編集画面に飛べるこのページを以て代えさせてください。
-      </p>
+      <main className={styles.main}>
+        <p>メッセージのURLを入力し、JUMPボタンを押すと、編集画面へとジャンプします。</p>
+        <p>データベースに保存されていないURLを入力した場合、エラーページに遷移します。</p>
 
-      <input type='text' value={url ?? ''} onChange={(e) => setUrl(e.target.value)} />
-      <Button label='JUMP' onClick={() => jump()} />
+        <input
+          type='text'
+          value={url ?? ''}
+          onChange={(e) => setUrl(e.target.value)}
+          className={clsx(styles.url, 'generalInput')}
+        />
+        <Button label='JUMP' onClick={() => jump()} className={styles.jumpButton} />
+      </main>
     </section>
   );
 };

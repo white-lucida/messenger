@@ -8,7 +8,11 @@ type ContentProps = {
 };
 
 const Content: React.VFC<ContentProps> = ({ children, isEnabled, className }) => {
-  return <section className={clsx(!isEnabled && styles.disabled, className)}>{children}</section>;
+  return (
+    <section className={clsx(!isEnabled && styles.disabled, className, styles.root)}>
+      {children}
+    </section>
+  );
 };
 
 export { Content };

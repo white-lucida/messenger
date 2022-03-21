@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { APIEmbed, APIActionRowComponent } from 'discord-api-types';
 import axios, { AxiosRequestConfig } from 'axios';
 import { editMessage, MessageDocument } from '../../src/utils/firestore';
+import { isAdminUserOauth2 } from '../../src/utils/check_admin_user';
+import { getSession } from 'next-auth/react';
 
 const edit = async (
   endpoint: string,
@@ -15,8 +17,14 @@ const edit = async (
   await editMessage(documentID, { ...data, actionRows: data.components });
 };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const body = req.body;
+  const session = await getSession({ req });
+
+  if (!isAdminUserOauth2(session)) {
+    res.status(400).end();
+    return;
+  }
 
   /** 型ガードを追加したい */
   const content: string = body.content;
@@ -27,7 +35,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const channelID: string = body.channelID;
   const messageID: string = body.messageID;
   const documentID: string = body.documentID;
-  // console.log(body);
 
   if (token === undefined) throw new Error();
 

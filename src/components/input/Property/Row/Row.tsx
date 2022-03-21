@@ -7,7 +7,7 @@ type RowProps = {
 };
 
 const Row: React.VFC<RowProps> = ({ children, className }) => {
-  return <p className={clsx(styles.root, className)}>{children}</p>;
+  return <div className={clsx(styles.root, className)}>{children}</div>;
 };
 
 export { Row };
