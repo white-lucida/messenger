@@ -132,6 +132,8 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
 
   if (!('fieldIndex' in action.payload)) {
     switch (action.type) {
+      case 'removeEmbed':
+        return state.filter((_, i) => i !== embedIndex);
       case 'newField': {
         const embed = state[embedIndex];
         return setEmbed(
@@ -296,9 +298,6 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
         },
         embedIndex,
       );
-    }
-    case 'removeEmbed': {
-      return state.filter((_, index) => index !== action.payload.embedIndex);
     }
     case 'removeField': {
       return state.map((embed, i) =>
