@@ -119,57 +119,168 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
    * @param  {number} index - 変更したい`Embed`のインデックス
    */
 
-  switch (action.type) {
-    case 'newEmbed':
-      return [...state, {}];
-    case 'newField': {
-      const embedIndex = action.payload.embedIndex;
-      const embed = state[embedIndex];
-      return setEmbed(
-        state,
-        {
-          ...embed,
-          fields: [
-            ...(embed.fields ?? []),
-            {
-              name: '',
-              value: '',
+  if (!('payload' in action)) {
+    switch (action.type) {
+      case 'newEmbed':
+        return [...state, {}];
+      default:
+        return state;
+    }
+  }
+
+  const embedIndex = action.payload.embedIndex;
+
+  if (!('fieldIndex' in action.payload)) {
+    switch (action.type) {
+      case 'newField': {
+        const embed = state[embedIndex];
+        return setEmbed(
+          state,
+          {
+            ...embed,
+            fields: [
+              ...(embed.fields ?? []),
+              {
+                name: '',
+                value: '',
+              },
+            ],
+          },
+          embedIndex,
+        );
+      }
+      case 'setTitle': {
+        const { title } = action.payload;
+        return setEmbed(
+          state,
+          {
+            ...state[embedIndex],
+            title,
+          },
+          embedIndex,
+        );
+      }
+      case 'setDescription': {
+        const { description } = action.payload;
+        return setEmbed(
+          state,
+          {
+            ...state[embedIndex],
+            description,
+          },
+          embedIndex,
+        );
+      }
+      case 'changeColor': {
+        const { color } = action.payload;
+        return setEmbed(
+          state,
+          {
+            ...state[embedIndex],
+            color: Number.parseInt(color.substring(1), 16),
+          },
+          embedIndex,
+        );
+      }
+      case 'setAuthorIconURL': {
+        const { icon_url } = action.payload;
+        return setAuthor(
+          state,
+          {
+            ...state[embedIndex].author,
+            icon_url,
+          },
+          embedIndex,
+        );
+      }
+      case 'setAuthorName': {
+        const { name } = action.payload;
+        return setAuthor(state, { ...state[embedIndex].author, name }, embedIndex);
+      }
+      case 'setAuthorURL': {
+        const { url } = action.payload;
+        return setAuthor(
+          state,
+          {
+            ...state[embedIndex].author,
+            url,
+          },
+          embedIndex,
+        );
+      }
+      case 'setFooterText': {
+        const { text } = action.payload;
+        return setFooter(
+          state,
+          {
+            ...state[embedIndex].footer,
+            text,
+          },
+          embedIndex,
+        );
+      }
+      case 'setFooterIconURL': {
+        const { icon_url } = action.payload;
+        return setFooter(
+          state,
+          {
+            ...state[embedIndex].footer,
+            icon_url,
+          },
+          embedIndex,
+        );
+      }
+      case 'setThumbnailURL': {
+        const { url } = action.payload;
+        const embed = state[embedIndex];
+        return setEmbed(
+          state,
+          {
+            ...embed,
+            thumbnail: {
+              ...embed.thumbnail,
+              url,
             },
-          ],
-        },
-        embedIndex,
-      );
+          },
+          embedIndex,
+        );
+      }
+      case 'setImageURL': {
+        const { url } = action.payload;
+        const embed = state[embedIndex];
+        return setEmbed(
+          state,
+          {
+            ...embed,
+            image: {
+              ...embed.image,
+              url,
+            },
+          },
+          embedIndex,
+        );
+      }
+      case 'setURL': {
+        const { url } = action.payload;
+        return setEmbed(state, { ...state[embedIndex], url }, embedIndex);
+      }
+      case 'setTimestamp': {
+        const { timestamp } = action.payload;
+        return setEmbed(state, { ...state[embedIndex], timestamp }, embedIndex);
+      }
+      default:
+        return state;
     }
-    case 'setTitle': {
-      const { embedIndex, title } = action.payload;
-      return setEmbed(
-        state,
-        {
-          ...state[embedIndex],
-          title,
-        },
-        embedIndex,
-      );
-    }
-    case 'setDescription': {
-      const { embedIndex, description } = action.payload;
-      return setEmbed(
-        state,
-        {
-          ...state[embedIndex],
-          description,
-        },
-        embedIndex,
-      );
-    }
+  }
+
+  const { fieldIndex } = action.payload;
+
+  switch (action.type) {
     case 'setFieldName':
     case 'setFieldValue': {
-      const { embedIndex, fieldIndex } = action.payload;
       const embed = state[embedIndex];
       const data =
-        action.type === 'setFieldName'
-          ? { name: action.payload.name }
-          : { value: action.payload.value };
+        'name' in action.payload ? { name: action.payload.name } : { value: action.payload.value };
       return setEmbed(
         state,
         {
@@ -189,111 +300,15 @@ const reducer = (state: APIEmbed[], action: EmbedActions): APIEmbed[] => {
     case 'removeEmbed': {
       return state.filter((_, index) => index !== action.payload.embedIndex);
     }
-    case 'changeColor': {
-      const { embedIndex, color } = action.payload;
-      return setEmbed(
-        state,
-        {
-          ...state[embedIndex],
-          color: Number.parseInt(color.substring(1), 16),
-        },
-        embedIndex,
-      );
-    }
-    case 'setAuthorIconURL': {
-      const { embedIndex, icon_url } = action.payload;
-      return setAuthor(
-        state,
-        {
-          ...state[embedIndex].author,
-          icon_url,
-        },
-        embedIndex,
-      );
-    }
-    case 'setAuthorName': {
-      const { embedIndex, name } = action.payload;
-      return setAuthor(state, { ...state[embedIndex].author, name }, embedIndex);
-    }
-    case 'setAuthorURL': {
-      const { embedIndex, url } = action.payload;
-      return setAuthor(
-        state,
-        {
-          ...state[embedIndex].author,
-          url,
-        },
-        embedIndex,
-      );
-    }
-    case 'setFooterText': {
-      const { embedIndex, text } = action.payload;
-      return setFooter(
-        state,
-        {
-          ...state[embedIndex].footer,
-          text,
-        },
-        embedIndex,
-      );
-    }
-    case 'setFooterIconURL': {
-      const { embedIndex, icon_url } = action.payload;
-      return setFooter(
-        state,
-        {
-          ...state[embedIndex].footer,
-          icon_url,
-        },
-        embedIndex,
-      );
-    }
-    case 'setThumbnailURL': {
-      const { embedIndex, url } = action.payload;
-      const embed = state[embedIndex];
-      return setEmbed(
-        state,
-        {
-          ...embed,
-          thumbnail: {
-            ...embed.thumbnail,
-            url,
-          },
-        },
-        embedIndex,
-      );
-    }
-    case 'setImageURL': {
-      const { embedIndex, url } = action.payload;
-      const embed = state[embedIndex];
-      return setEmbed(
-        state,
-        {
-          ...embed,
-          image: {
-            ...embed.image,
-            url,
-          },
-        },
-        embedIndex,
-      );
-    }
-    case 'setURL': {
-      const { embedIndex, url } = action.payload;
-      return setEmbed(state, { ...state[embedIndex], url }, embedIndex);
-    }
-    case 'setTimestamp': {
-      const { embedIndex, timestamp } = action.payload;
-      return setEmbed(state, { ...state[embedIndex], timestamp }, embedIndex);
-    }
     case 'removeField': {
-      const { embedIndex, fieldIndex } = action.payload;
       return state.map((embed, i) =>
         i === embedIndex
           ? { ...embed, fields: embed.fields?.filter((_, n) => n !== fieldIndex) }
           : embed,
       );
     }
+    default:
+      return state;
   }
 };
 

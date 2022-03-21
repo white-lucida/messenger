@@ -21,12 +21,9 @@ const isSelectMenu = (component: APIMessageComponent): component is APISelectMen
  */
 const isButtonWithCustomID = (
   button: APIButtonComponent,
-): button is APIButtonComponentWithCustomId => {
-  return (button as APIButtonComponentWithCustomId).custom_id !== undefined;
-};
+): button is APIButtonComponentWithCustomId => 'custom_id' in button;
 
-const isButtonWithURL = (button: APIButtonComponent): button is APIButtonComponentWithURL => {
-  return (button as APIButtonComponentWithURL).url !== undefined;
-};
+const isButtonWithURL = (button: APIButtonComponent): button is APIButtonComponentWithURL =>
+  'url' in button;
 
 export { isActionRow, isButton, isSelectMenu, isButtonWithURL, isButtonWithCustomID };
