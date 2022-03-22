@@ -7,7 +7,7 @@ type PanelProps = {
 };
 
 const Panel: React.VFC<PanelProps> = ({ children, className }) => {
-  return <section className={clsx(styles.root, className)}>{children}</section>;
+  return <ul className={clsx(styles.root, className)}>{children}</ul>;
 };
 
 export { Panel };

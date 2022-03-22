@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { APIActionRowComponent, APIEmbed } from 'discord-api-types';
+import clsx from 'clsx';
 
 import { MessageInput } from './MessageInput';
 import { Form as EmbedForm } from './input/Embed/Form';
@@ -7,16 +8,16 @@ import { Form as ActionRowForm } from './input/MessageComponent/Form';
 import { MessagePreview } from './MessagePreview';
 import { NewRowButton } from './input/MessageComponent/NewRowButton';
 import { TextArea } from './input/Property';
+import { Button, DiscordLikeButton } from './ui';
 
 import { useEmbeds } from '../hooks/use_embeds';
 import { EmbedsDispatchContext } from '../hooks/use_embed';
 import { useActionRows } from '../hooks/use_actionrows';
 import { ActionRowsDispatchContext } from '../hooks/use_actionrow';
 import { SetErrorContext } from '../hooks/use_error';
+import { useReloadAlert } from '../hooks/use_reloadalert';
 
 import styles from '../../styles/Form.module.css';
-import { Button, DiscordLikeButton } from './ui';
-import { useReloadAlert } from '../hooks/use_reloadalert';
 
 type FormProps = {
   onSubmit: (content: string, embeds: APIEmbed[], components: APIActionRowComponent[]) => void;
@@ -25,9 +26,10 @@ type FormProps = {
     embeds: APIEmbed[];
     actionRows: APIActionRowComponent[];
   };
+  className?: string;
 };
 
-const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
+const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue, className }) => {
   const [content, setContent] = useState(defaultValue?.content ?? '');
   const { embeds, dispatch: embedsDispatch } = useEmbeds(defaultValue?.embeds);
   const { actionRows, dispatch: actionRowsDispatch } = useActionRows(defaultValue?.actionRows);
@@ -45,7 +47,7 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.root}>
+    <form onSubmit={handleSubmit} className={clsx(styles.root, className)}>
       <div className={styles.main}>
         <SetErrorContext.Provider value={setIsError}>
           <MessageInput className={styles.input}>
@@ -53,12 +55,17 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
             <TextArea onChange={(value) => setContent(value)} value={content} />
             <h3> 埋め込み </h3>
             <EmbedsDispatchContext.Provider value={embedsDispatch}>
-              <div className={styles.embeds}>
+              <ul className={styles.embeds}>
                 {useMemo(
-                  () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
+                  () =>
+                    embeds.map((embed, i) => (
+                      <li key={i}>
+                        <EmbedForm embed={embed} index={i} />
+                      </li>
+                    )),
                   [embeds],
                 )}
-              </div>
+              </ul>
             </EmbedsDispatchContext.Provider>
             <Button
               onClick={() => embedsDispatch({ type: 'newEmbed' })}
@@ -67,15 +74,17 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue }) => {
 
             <h3> Message Component </h3>
             <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
-              <div className={styles.actionRows}>
+              <ul className={styles.actionRows}>
                 {useMemo(
                   () =>
                     actionRows.map((row, rowIndex) => (
-                      <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
+                      <li key={rowIndex}>
+                        <ActionRowForm rowIndex={rowIndex} actionRow={row} />
+                      </li>
                     )),
                   [actionRows],
                 )}
-              </div>
+              </ul>
               <NewRowButton />
             </ActionRowsDispatchContext.Provider>
           </MessageInput>

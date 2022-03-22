@@ -10,6 +10,7 @@ import { useEmbed } from '../../../hooks/use_embed';
 import { useCardTab } from '../../../hooks/use_cardtab';
 import { Button } from '../../ui';
 
+import styles from './Form.module.css';
 import 'react-datepicker/dist/react-datepicker.css';
 
 type FormProps = {
@@ -42,12 +43,14 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
 
       <TabPanel>
         {tabNames.map((name, i) => (
-          <TabButton
-            onClick={() => changeTab(name)}
-            isEnabled={isCurrentTab(name)}
-            tabName={name}
-            key={i}
-          />
+          <li key={i}>
+            <TabButton
+              onClick={() => changeTab(name)}
+              isEnabled={isCurrentTab(name)}
+              tabName={name}
+              key={i}
+            />
+          </li>
         ))}
       </TabPanel>
 
@@ -95,61 +98,71 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ index, embed, cl
           </Row>
         </Content>
         <Content isEnabled={isCurrentTab('フィールド')}>
-          {embed.fields?.map((field, i) => (
-            <Row key={i}>
-              <Label>{i + 1}</Label>
+          <ul className={styles.fields}>
+            {embed.fields?.map((field, i) => (
+              <li key={i}>
+                <Row>
+                  <Label>{i + 1}</Label>
 
-              <Verifier errorCondition={field.name === ''} alert='フィールド名を入力してください'>
-                <Verifier
-                  errorCondition={(field.name?.length ?? 0) > 256}
-                  alert='フィールド名を256文字より短くしてください'
-                >
-                  <Input
-                    onChange={(value) =>
+                  <Verifier
+                    errorCondition={field.name === ''}
+                    alert='フィールド名を入力してください'
+                  >
+                    <Verifier
+                      errorCondition={(field.name?.length ?? 0) > 256}
+                      alert='フィールド名を256文字より短くしてください'
+                    >
+                      <Input
+                        onChange={(value) =>
+                          dispatch({
+                            type: 'setFieldName',
+                            payload: {
+                              embedIndex: index,
+                              fieldIndex: i,
+                              name: value,
+                            },
+                          })
+                        }
+                        value={field.name}
+                      />
+                    </Verifier>
+                  </Verifier>
+                  <Verifier
+                    errorCondition={field.value === ''}
+                    alert='フィールドの値を入力してください'
+                  >
+                    <Verifier
+                      errorCondition={(field.value?.length ?? 0) > 1024}
+                      alert='フィールドの値を1024文字より短くしてください'
+                    >
+                      <TextArea
+                        onChange={(value) =>
+                          dispatch({
+                            type: 'setFieldValue',
+                            payload: {
+                              embedIndex: index,
+                              fieldIndex: i,
+                              value: value,
+                            },
+                          })
+                        }
+                        value={field.value}
+                      />
+                    </Verifier>
+                  </Verifier>
+                  <Button
+                    onClick={() =>
                       dispatch({
-                        type: 'setFieldName',
-                        payload: {
-                          embedIndex: index,
-                          fieldIndex: i,
-                          name: value,
-                        },
+                        type: 'removeField',
+                        payload: { embedIndex: index, fieldIndex: i },
                       })
                     }
-                    value={field.name}
+                    label='このフィールドを削除する'
                   />
-                </Verifier>
-              </Verifier>
-              <Verifier
-                errorCondition={field.value === ''}
-                alert='フィールドの値を入力してください'
-              >
-                <Verifier
-                  errorCondition={(field.value?.length ?? 0) > 1024}
-                  alert='フィールドの値を1024文字より短くしてください'
-                >
-                  <TextArea
-                    onChange={(value) =>
-                      dispatch({
-                        type: 'setFieldValue',
-                        payload: {
-                          embedIndex: index,
-                          fieldIndex: i,
-                          value: value,
-                        },
-                      })
-                    }
-                    value={field.value}
-                  />
-                </Verifier>
-              </Verifier>
-              <Button
-                onClick={() =>
-                  dispatch({ type: 'removeField', payload: { embedIndex: index, fieldIndex: i } })
-                }
-                label='このフィールドを削除する'
-              />
-            </Row>
-          ))}
+                </Row>
+              </li>
+            ))}
+          </ul>
 
           <Button
             onClick={() => dispatch({ type: 'newField', payload: { embedIndex: index } })}

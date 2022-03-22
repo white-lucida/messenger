@@ -1,8 +1,14 @@
 .main {
   padding: 30px;
+  padding-bottom: 0; /* フォーム部との間の空白を調整 */
 }
 
 .channelURL {
   width: 30em;
   max-width: 80vw; /* スマートフォンでの画面はみ出しを防止 */
+}
+
+.form {
+  position: relative;
+  top: -30px;
 }

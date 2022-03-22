@@ -18,6 +18,8 @@
 .embeds,
 .actionRows {
   display: flex;
+  list-style: none;
+  padding-left: 0;
   flex-wrap: wrap;
   gap: 20px;
 }
