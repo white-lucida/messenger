@@ -55,12 +55,17 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue, className }) => {
             <TextArea onChange={(value) => setContent(value)} value={content} />
             <h3> 埋め込み </h3>
             <EmbedsDispatchContext.Provider value={embedsDispatch}>
-              <div className={styles.embeds}>
+              <ul className={styles.embeds}>
                 {useMemo(
-                  () => embeds.map((embed, i) => <EmbedForm key={i} embed={embed} index={i} />),
+                  () =>
+                    embeds.map((embed, i) => (
+                      <li key={i}>
+                        <EmbedForm embed={embed} index={i} />
+                      </li>
+                    )),
                   [embeds],
                 )}
-              </div>
+              </ul>
             </EmbedsDispatchContext.Provider>
             <Button
               onClick={() => embedsDispatch({ type: 'newEmbed' })}
@@ -69,15 +74,17 @@ const Form: React.VFC<FormProps> = ({ onSubmit, defaultValue, className }) => {
 
             <h3> Message Component </h3>
             <ActionRowsDispatchContext.Provider value={actionRowsDispatch}>
-              <div className={styles.actionRows}>
+              <ul className={styles.actionRows}>
                 {useMemo(
                   () =>
                     actionRows.map((row, rowIndex) => (
-                      <ActionRowForm key={rowIndex} rowIndex={rowIndex} actionRow={row} />
+                      <li key={rowIndex}>
+                        <ActionRowForm rowIndex={rowIndex} actionRow={row} />
+                      </li>
                     )),
                   [actionRows],
                 )}
-              </div>
+              </ul>
               <NewRowButton />
             </ActionRowsDispatchContext.Provider>
           </MessageInput>

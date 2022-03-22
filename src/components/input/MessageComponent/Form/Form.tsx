@@ -21,7 +21,11 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ actionRow, rowIn
       actionRow.components.map((component, i) => {
         switch (component.type) {
           case 2:
-            return <Button key={i} button={component} rowIndex={rowIndex} buttonIndex={i} />;
+            return (
+              <li key={i}>
+                <Button button={component} rowIndex={rowIndex} buttonIndex={i} />
+              </li>
+            );
           case 3:
             return (
               <SelectMenu key={i} selectMenu={component} rowIndex={rowIndex} selectMenuIndex={i} />
@@ -32,7 +36,7 @@ const Form: React.VFC<FormProps> = React.memo(function Inside({ actionRow, rowIn
   );
   return (
     <ActionRow index={rowIndex}>
-      <div className={styles.children}>{componentInputs}</div>
+      <ul className={styles.children}>{componentInputs}</ul>
       <NewComponentButton
         onClick={() => dispatch({ type: 'newButton', payload: { rowIndex } })}
         label='ボタンを追加する'
